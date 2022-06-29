@@ -6,3 +6,7 @@ https://qiita.com/yuji_saito/items/8f472dcd785c1fadf666
 https://developers.google.com/youtube/v3/docs/search?hl=ja
 
 https://blog.codecamp.jp/android-app-youtube
+
+API認証サイト：
+
+https://console.cloud.google.com/apis/credentials?organizationId=0&project=red-function-354800
