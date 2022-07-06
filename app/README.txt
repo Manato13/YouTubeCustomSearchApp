@@ -7,6 +7,8 @@ https://developers.google.com/youtube/v3/docs/search?hl=ja
 
 https://blog.codecamp.jp/android-app-youtube
 
-API認証サイト：
+API使用・Json形式取り扱い：
+https://www.youtube.com/watch?v=y2xtLqP8dSQ
 
+API認証サイト：
 https://console.cloud.google.com/apis/credentials?organizationId=0&project=red-function-354800
