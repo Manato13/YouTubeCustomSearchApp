@@ -26,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView;
     private RequestQueue requestQueue;
     static private final String API_KEY = "AIzaSyAP-mnDKDFJLJ8hxPkJzIQN5hvTgctBne8";
+    public String Channel_ID = "UClSsb_e0HDQ-w7XuwNPgGqQ";
+    public String Max_Results = "50";
+    public String Video_ID = "ZqRJj6NZWb0";
     //private MenuItem search_item;
 
     @Override
@@ -73,9 +76,9 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    //Youtube Data APIの使用とレスポンスとして入手できるJson形式のデータをStringとして抜き出す。
+    //Youtube Data API V3(search)を使用して指定のチャンネルからアップロードされている動画のIDをリクエストし、レスポンスとして入手できるJson形式のデータをStringとして抜き出す。
     private void jsonSearch() {
-        String url = "https://www.googleapis.com/youtube/v3/search?playlistId=UUZf__ehlCEBPop-_sldpBUQ&part=snippet&key=" + API_KEY;
+        String url = "https://www.googleapis.com/youtube/v3/search?fields=items/id/videoId,items/snippet/publishedAt,items/snippet/title&order=viewCount&part=id,snippet&maxResults=" + Max_Results + "&channelId=" + Channel_ID + "&key=" + API_KEY;
         System.out.println(url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -85,11 +88,21 @@ public class MainActivity extends AppCompatActivity {
                     for (int i = 0; i < jsonArrayItems.length(); i++) {
 
                         JSONObject jsonObjectItems = jsonArrayItems.getJSONObject(i);
-                        String kind = jsonObjectItems.getString("kind");
-                        String etag = jsonObjectItems.getString("etag");
+//                        String kind = jsonObjectItems.getString("kind");
+//                        String etag = jsonObjectItems.getString("etag");
+
+                        //json形式のデータから必要なものを取り出す。
+                        //snippetの中身
+                        String snippet = jsonObjectItems.getString("snippet");
+                        //投稿日時
+                        String publishedAt = jsonObjectItems.getJSONObject("snippet").getString("publishedAt");
+                        //動画タイトル
+                        String title = jsonObjectItems.getJSONObject("snippet").getString("title");
+                        //idの中身
                         String id = jsonObjectItems.getString("id");
+                        //その動画の固有ID
                         String videoId = jsonObjectItems.getJSONObject("id").getString("videoId");//参考(https://ja.stackoverflow.com/questions/47502/%E3%83%8D%E3%82%B9%E3%83%88%E3%81%95%E3%82%8C%E3%81%A6%E3%82%8Bjson%E3%81%AE%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E5%8F%96%E5%BE%97%E3%81%97%E3%81%9F%E3%81%84)
-                        textView.append(kind + "\n" + etag + "\n" + id + "\n" + videoId + "\n\n");
+                        textView.append(snippet + "\n" + publishedAt + "\n" + title + "\n" + id + "\n" + videoId + "\n\n");
                         System.out.println();
                     }
                 } catch (JSONException e) {
@@ -104,4 +117,52 @@ public class MainActivity extends AppCompatActivity {
         });
         requestQueue.add(request);
     }
+
+
+    //Youtube Data API V3(video)を使用して先ほど取得した動画のIDを元にそれらの詳細なデータをリクエストし、レスポンスとして入手できるJson形式のデータをStringとして抜き出す。
+    private void jsonVideo() {
+        String url = "https://www.googleapis.com/youtube/v3/videos?id=ZqRJj6NZWb0&part=statistics&maxResults=1&fields=items/statistics" + Max_Results + "&id=" + Video_ID + "&key=" + API_KEY;
+        System.out.println(url);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray jsonArrayItems = response.getJSONArray("items");
+                    for (int i = 0; i < jsonArrayItems.length(); i++) {
+
+                        JSONObject jsonObjectItems = jsonArrayItems.getJSONObject(i);
+//                        String kind = jsonObjectItems.getString("kind");
+//                        String etag = jsonObjectItems.getString("etag");
+
+                        //json形式のデータから必要なものを取り出す。
+                        //snippetの中身
+                        String snippet = jsonObjectItems.getString("snippet");
+                        //投稿日時
+                        String publishedAt = jsonObjectItems.getJSONObject("snippet").getString("publishedAt");
+                        //動画タイトル
+                        String title = jsonObjectItems.getJSONObject("snippet").getString("title");
+                        //idの中身
+                        String id = jsonObjectItems.getString("id");
+                        //その動画の固有ID
+                        String videoId = jsonObjectItems.getJSONObject("id").getString("videoId");//参考(https://ja.stackoverflow.com/questions/47502/%E3%83%8D%E3%82%B9%E3%83%88%E3%81%95%E3%82%8C%E3%81%A6%E3%82%8Bjson%E3%81%AE%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E5%8F%96%E5%BE%97%E3%81%97%E3%81%9F%E3%81%84)
+                        textView.append(snippet + "\n" + publishedAt + "\n" + title + "\n" + id + "\n" + videoId + "\n\n");
+                        System.out.println();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+        requestQueue.add(request);
+    }
+
+
+
+
+
 }
