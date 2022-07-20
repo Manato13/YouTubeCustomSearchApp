@@ -51,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
     //APIKey(ここで確認　https://console.cloud.google.com/apis/dashboard?project=red-function-354800)
     static private final String API_KEY = "AIzaSyAP-mnDKDFJLJ8hxPkJzIQN5hvTgctBne8";
     //制作過程で一時的に使用するパラメーター（完成版では任意に）
-    public String Channel_ID = "UCpCesuCH4UxIcy65gSrC0Pw";
-    public String Max_Results = "5";
+    public String Channel_ID = "UClSsb_e0HDQ-w7XuwNPgGqQ";
+    public static String Max_Results = "15";
     public String Video_ID;
     //取得した動画の情報を保存する二次元ArrayList配列
     public ArrayList<ArrayList<String>> youtubeDataArray = new ArrayList<ArrayList<String>>();
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                 //SortVideosクラスを呼び出して並べ替えを実行する。
                 sortVideos = new SortVideos();
                 //とりあえず今は4番モード（高評価）で実行
-                sortVideos.sortMethod(false,sortVideos.preForSort(4,youtubeDataArray),youtubeDataArray);
+                sortVideos.sortMethod(false,sortVideos.preForSort(7,youtubeDataArray),youtubeDataArray);
             }
         });
 

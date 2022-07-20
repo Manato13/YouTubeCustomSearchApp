@@ -14,7 +14,8 @@ import java.util.Comparator;
 //投稿日時のレスポンスフォーマット："YYYY-MM-DDT24:60:60Z"、"2018-08-29T15:00:03Z"
 public class SortVideos {
     //フィールド変数部
-    public int NumOfVideos = 5; //動画の本数（一時的に使う）
+    //動画の本数
+    public int NumOfVideos = Integer.parseInt(MainActivity.Max_Results); //動画の本数（一時的に使う）
 
     //コンストラクタ部
 
@@ -26,20 +27,20 @@ public class SortVideos {
 
         //3.再生回数順、4.高評価数順、5.コメント数順のいずれかでソートする場合
         if (selectMode == 3 || selectMode == 4 || selectMode == 5) {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < NumOfVideos; i++) {
                 dataMap.put(YTarray.get(i).get(6), Integer.parseInt(YTarray.get(i).get(selectMode)));
             }
             //隠れた名作順(再生回数/高評価で算出。値が小さければ小さいほど面白いわりに再生されていない。)のいずれかでソートする場合
          } else if (selectMode == 7) {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < NumOfVideos; i++) {
                 int likeDevideView = 0;
-                likeDevideView = Integer.parseInt(YTarray.get(i).get(3)) / Integer.parseInt(YTarray.get(i).get(4));
+                likeDevideView = Integer.parseInt(YTarray.get(i).get(3))*1000 / Integer.parseInt(YTarray.get(i).get(4));
                 dataMap.put(YTarray.get(i).get(6), likeDevideView);
             }
             //1.投稿日時順でソートする場合
             //投稿日時のレスポンスフォーマット："YYYY-MM-DDT24:60:60Z"、"2018-08-29T15:00:03Z"
         } else if(selectMode == 1) {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < NumOfVideos; i++) {
                 int timeSum = 0;
                 //YYYYの部分を切り出す
                 int year = Integer.parseInt(YTarray.get(i).get(1).substring(0, 4));
