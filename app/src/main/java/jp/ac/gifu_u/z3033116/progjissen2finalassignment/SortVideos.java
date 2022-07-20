@@ -14,13 +14,11 @@ import java.util.Comparator;
 //投稿日時のレスポンスフォーマット："YYYY-MM-DDT24:60:60Z"、"2018-08-29T15:00:03Z"
 public class SortVideos {
     //フィールド変数部
-    //動画の本数（一時的に使う）
-    public int NumOfVideos = 5;
+    public int NumOfVideos = 5; //動画の本数（一時的に使う）
 
     //コンストラクタ部
 
-
-//メソッド部
+    //メソッド部
 
     //並べ替えをする前の下準備を行うメソッド
     public Map<String, Integer> preForSort(int selectMode,ArrayList<ArrayList<String>> YTarray) {
@@ -69,7 +67,7 @@ public class SortVideos {
 
 
     //並べ替えを行う関数の本体
-    public void sortMethod(boolean sort, Map<String, Integer> dataMap) {
+    public void sortMethod(boolean sort, Map<String, Integer> dataMap, ArrayList<ArrayList<String>> YTarray) {
         // 2.Map.Entryのリストを作成する(MapのEntry(キーと値のペア）のリストを作成)
         List<Entry<String, Integer>> list_entries = new ArrayList<Entry<String, Integer>>(dataMap.entrySet());
 
@@ -86,8 +84,13 @@ public class SortVideos {
             System.out.println("昇順でのソート");
             // 5. ループで要素順に値を取得する(ループで要素数を順に表示させていくと、昇順でソートされていく)
             for (Entry<String, Integer> entry : list_entries) {
-                System.out.println(entry.getKey() + " : " + entry.getValue());
+                //ここで動画のタイトルを出力
+                System.out.println(YTarray.get(Integer.parseInt(entry.getKey())).get(0) + "\n");
+                //ここでソートに使用した値を出力
+                System.out.println(entry.getValue() + "\n");
+                //System.out.println(entry.getKey() + " : " + entry.getValue());
             }
+
         //sortがfalseならば降順
         } else {
             // 6. 比較関数Comparatorを使用してMap.Entryの値を比較する（降順）(降順でソートするときは、compareToメソッドを使用するときに、Entryのobj2（降順）を指定して返せばOK)
@@ -102,18 +105,16 @@ public class SortVideos {
             System.out.println("降順でのソート");
             // 7. ループで要素順に値を取得する(ループで要素数を順に表示させていくと、降順でソートされていく)
             for (Entry<String, Integer> entry : list_entries) {
-                System.out.println(entry.getKey() + " : " + entry.getValue());
+                //ここで動画のタイトルを出力
+                System.out.println(YTarray.get(Integer.parseInt(entry.getKey())).get(0) + "\n");
+                //ここでソートに使用した値を出力
+                System.out.println(entry.getValue() + "\n");
+                //System.out.println(entry.getKey() + " : " + entry.getValue());
             }
         }
 
-
     }
 }
-//MainActivity mainactivity = new MainActivity();
-
-//コンストラクタ部
-
-//method
 
 
 

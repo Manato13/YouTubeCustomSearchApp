@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     public int videoSum = 0;
     //csvファイルを出力するクラス
     ExportCsv exportCsv;
+    //動画を並べ替えるクラス
+    SortVideos sortVideos;
     //ループした回数
     public int loop = 0;
 
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         //ボタン・テキストエディタの配置とIDの登録
         Button buttonSearch = findViewById(R.id.button_search);
         Button buttonCsv = findViewById(R.id.button_csv);
+        Button buttonSort = findViewById(R.id.button_sort);
         Toolbar toolbar = findViewById(R.id.id_toolbar);
         editText = findViewById(R.id.editText_channelId);
 
@@ -83,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
         requestQueue = Volley.newRequestQueue(this);
 
+/*
         //外部ストレージを使用するので権限のリクエストをする。
         // Android 6, API 23以上でパーミッションの確認
         if(Build.VERSION.SDK_INT >= 23) {
@@ -92,22 +96,23 @@ public class MainActivity extends AppCompatActivity {
             checkPermission(permissions, REQUEST_CODE);
         }
 
+ */
+
 
         //APIを使用を開始するボタン
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // 入力したチャンネルIDを取得
-                Channel_ID = editText.getText().toString();
-                Log.i("test",Channel_ID + "\n" );
-                //jsonSearch();
-                fakeSearch();
+                //Channel_ID = editText.getText().toString();
+                //Log.i("test",Channel_ID + "\n" );
+                jsonSearch();
+                //fakeSearch();
                 Log.i("test","search完了時点で取得したデータ" + youtubeDataArray + "\n" );
                 makeVideoId();
-                //jsonVideo();
+                jsonVideo();
                 //Log.i("test","video完了時点で取得したデータ" + youtubeDataArray + "\n" );
                 //https://www.google.com/search?q=android+studio+AcyncLoader&rlz=1C1FQRR_jaJP977JP977&sxsrf=ALiCzsZYwBa_35HQEyBgshbhEWyVxDMTOw%3A1658145621294&ei=VUvVYs2hEe3s2roPsqGhyAU&ved=0ahUKEwiNoPjlsYL5AhVttlYBHbJQCFkQ4dUDCA4&uact=5&oq=android+studio+AcyncLoader&gs_lcp=Cgdnd3Mtd2l6EAM6BwgAEEcQsAM6CwgAEIAEEAQQJRAgOgQIIxAnOgUIABCABEoECEEYAEoECEYYAFD1BVj-DmDgEGgBcAB4AIABgwGIAYMEkgEDMy4ymAEAoAEBoAECyAEKwAEB&sclient=gws-wiz
-
             }
         });
 
@@ -118,6 +123,18 @@ public class MainActivity extends AppCompatActivity {
 
                 //ExportCsvクラスを呼び出してファイルを作成する。
                 exportCsv = new ExportCsv(youtubeDataArray);
+            }
+        });
+
+        //動画を並べ替えるボタン
+        buttonSort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                //SortVideosクラスを呼び出して並べ替えを実行する。
+                sortVideos = new SortVideos();
+                //とりあえず今は4番モード（高評価）で実行
+                sortVideos.sortMethod(false,sortVideos.preForSort(4,youtubeDataArray),youtubeDataArray);
             }
         });
 
