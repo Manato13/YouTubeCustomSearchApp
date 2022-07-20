@@ -12,3 +12,7 @@ https://www.youtube.com/watch?v=y2xtLqP8dSQ
 
 API認証サイト：
 https://console.cloud.google.com/apis/credentials?organizationId=0&project=red-function-354800
+
+公式ドキュメント：
+API(video)   https://developers.google.com/youtube/v3/docs/videos/list?hl=ja
+API(search)

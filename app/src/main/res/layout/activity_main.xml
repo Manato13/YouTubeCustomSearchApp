@@ -32,4 +32,13 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:text="search" />
+
+    <Button
+        android:id="@+id/button_csv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/button_search"
+        android:layout_centerHorizontal="true"
+        android:text="csv" />
+
     </RelativeLayout>
