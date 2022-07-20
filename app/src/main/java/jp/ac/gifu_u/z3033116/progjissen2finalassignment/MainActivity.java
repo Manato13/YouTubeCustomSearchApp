@@ -4,12 +4,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.Manifest;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
+import android.widget.EditText;
 
 import android.graphics.Color;
 import android.util.Log;
@@ -37,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     //フィールド変数部
     private TextView textView;
+    private EditText editText;
     private RequestQueue requestQueue;
     //APIKey(ここで確認　https://console.cloud.google.com/apis/dashboard?project=red-function-354800)
     static private final String API_KEY = "AIzaSyAP-mnDKDFJLJ8hxPkJzIQN5hvTgctBne8";
@@ -50,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     public int videoSum = 0;
     //csvファイルを出力するクラス
     ExportCsv exportCsv;
+    //ループした回数
+    public int loop = 0;
 
     private final int REQUEST_CODE = 1000;
 
@@ -61,10 +73,11 @@ public class MainActivity extends AppCompatActivity {
 
         textView = findViewById(R.id.text_view_result);
         textView.setTextColor(Color.RED);
-        //ボタンの配置とIDの登録
+        //ボタン・テキストエディタの配置とIDの登録
         Button buttonSearch = findViewById(R.id.button_search);
         Button buttonCsv = findViewById(R.id.button_csv);
         Toolbar toolbar = findViewById(R.id.id_toolbar);
+        editText = findViewById(R.id.editText_channelId);
 
         setSupportActionBar(toolbar);
 
@@ -84,12 +97,14 @@ public class MainActivity extends AppCompatActivity {
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                // 入力したチャンネルIDを取得
+                Channel_ID = editText.getText().toString();
+                Log.i("test",Channel_ID + "\n" );
                 //jsonSearch();
                 fakeSearch();
                 Log.i("test","search完了時点で取得したデータ" + youtubeDataArray + "\n" );
                 makeVideoId();
-                jsonVideo();
+                //jsonVideo();
                 //Log.i("test","video完了時点で取得したデータ" + youtubeDataArray + "\n" );
                 //https://www.google.com/search?q=android+studio+AcyncLoader&rlz=1C1FQRR_jaJP977JP977&sxsrf=ALiCzsZYwBa_35HQEyBgshbhEWyVxDMTOw%3A1658145621294&ei=VUvVYs2hEe3s2roPsqGhyAU&ved=0ahUKEwiNoPjlsYL5AhVttlYBHbJQCFkQ4dUDCA4&uact=5&oq=android+studio+AcyncLoader&gs_lcp=Cgdnd3Mtd2l6EAM6BwgAEEcQsAM6CwgAEIAEEAQQJRAgOgQIIxAnOgUIABCABEoECEEYAEoECEYYAFD1BVj-DmDgEGgBcAB4AIABgwGIAYMEkgEDMy4ymAEAoAEBoAECyAEKwAEB&sclient=gws-wiz
 
@@ -160,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
                         tmpArray.add(title);
                         tmpArray.add(publishedAt);
                         tmpArray.add(videoId);
+
                         youtubeDataArray.add(tmpArray);
                         //tmpArray.clear();
 
@@ -231,6 +247,8 @@ public class MainActivity extends AppCompatActivity {
                         youtubeDataArray.get(i).add(viewCount);
                         youtubeDataArray.get(i).add(likeCount);
                         youtubeDataArray.get(i).add(commentCount);
+                        //動画を識別するための固有のインデックスを追加する。
+                        youtubeDataArray.get(i).add("" + (100*loop+i));
                         //tmpArray.clear();
 
                     }

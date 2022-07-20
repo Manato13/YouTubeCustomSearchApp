@@ -41,4 +41,13 @@
         android:layout_centerHorizontal="true"
         android:text="csv" />
 
+    <EditText
+        android:id="@+id/editText_channelId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/id_toolbar"
+        android:layout_centerHorizontal="true"
+        android:text="チャンネルIDを入力" />
+
+
     </RelativeLayout>
