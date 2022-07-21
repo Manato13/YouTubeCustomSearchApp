@@ -55,7 +55,9 @@ public class MainActivity extends AppCompatActivity {
     //APIKey(ここで確認　https://console.cloud.google.com/apis/dashboard?project=red-function-354800)
     static private final String API_KEY = "AIzaSyAP-mnDKDFJLJ8hxPkJzIQN5hvTgctBne8";
     //制作過程で一時的に使用するパラメーター（完成版では任意に）
-    public String Channel_ID = "UChu8Yu_w9z8DGFtXzuGvDlg";
+    public String Channel_ID = "";
+    public String Channel_URL;
+    public String Channel_Name;
     public static String Max_Results = "3";
     public String Video_ID;
     //取得した動画の情報を保存する二次元ArrayList配列
@@ -109,14 +111,13 @@ public class MainActivity extends AppCompatActivity {
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 入力したチャンネルIDを取得
-                //Channel_ID = editText.getText().toString();
+
                 //Log.i("test",Channel_ID + "\n" );
                 jsonSearch();
                 //fakeSearch();
-                Log.i("test","search完了時点で取得したデータ" + youtubeDataArray + "\n" );
-                makeVideoId();
-                jsonVideo();
+                //Log.i("test","search完了時点で取得したデータ" + youtubeDataArray + "\n" );
+                //makeVideoId();
+                //jsonVideo();
                 //Log.i("test","video完了時点で取得したデータ" + youtubeDataArray + "\n" );
                 //https://www.google.com/search?q=android+studio+AcyncLoader&rlz=1C1FQRR_jaJP977JP977&sxsrf=ALiCzsZYwBa_35HQEyBgshbhEWyVxDMTOw%3A1658145621294&ei=VUvVYs2hEe3s2roPsqGhyAU&ved=0ahUKEwiNoPjlsYL5AhVttlYBHbJQCFkQ4dUDCA4&uact=5&oq=android+studio+AcyncLoader&gs_lcp=Cgdnd3Mtd2l6EAM6BwgAEEcQsAM6CwgAEIAEEAQQJRAgOgQIIxAnOgUIABCABEoECEEYAEoECEYYAFD1BVj-DmDgEGgBcAB4AIABgwGIAYMEkgEDMy4ymAEAoAEBoAECyAEKwAEB&sclient=gws-wiz
             }
@@ -126,6 +127,11 @@ public class MainActivity extends AppCompatActivity {
         buttonCsv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // 入力したURLを使ってAPIを使用しカスタムされていないチャンネルIDを取得
+                Channel_URL = editText.getText().toString();
+                jsonFindChannelID();
+
+                /*
                 //youtubeDataArrayが空っぽでないかどうかを確認する
                 if (youtubeDataArray != null) {
                     //ExportCsvクラスを呼び出してファイルを作成する。
@@ -135,13 +141,14 @@ public class MainActivity extends AppCompatActivity {
                     //openFileOutput()はMainActivity内でしか使えない
                     try(FileOutputStream fileOutputStream = openFileOutput(fileName, Context.MODE_APPEND)){
                         //fileOutputStream.write(exportCsv.ConvertARtoST(youtubeDataArray).getBytes(StandardCharsets.UTF_8));
-                        fileOutputStream.write(exportCsv.ConvertARtoST(youtubeDataArray).getBytes(StandardCharsets.UTF_16BE));
+                        fileOutputStream.write(exportCsv.ConvertARtoST(youtubeDataArray).getBytes(StandardCharsets.UTF_8));
                         System.out.println("書き込みに成功しました");
                     }catch (IOException e){
                         System.out.println("書き込みに失敗しました");
                         e.printStackTrace();
                     }
                 }
+                */
             }
         });
 
@@ -151,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //SortVideosクラスを呼び出して並べ替えを実行する。
                 sortVideos = new SortVideos();
+                //selectMode一覧：1.投稿日時、3.再生回数、4.高評価数、5.コメント数、7.隠れた名作
                 //とりあえず今は4番モード（高評価）で実行
                 sortVideos.sortMethod(false,sortVideos.preForSort(7,youtubeDataArray),youtubeDataArray);
             }
@@ -178,6 +186,40 @@ public class MainActivity extends AppCompatActivity {
         };
 
         return true;
+    }
+
+    //Youtube Data API V3(search)を使用して入力されたチャンネルURLから、カスタムされていない「元のチャンネルID」とチャンネル名を取得する。
+    private void jsonFindChannelID() {
+        String url = "https://www.googleapis.com/youtube/v3/search?fields=items/snippet/channelId,items/snippet/title&part=snippet&maxResults=1&type=channel&q=" + Channel_URL + "&key=" + API_KEY;
+        //System.out.println(url);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray jsonArrayItems = response.getJSONArray("items");
+                        //json形式のデータから必要なものを取り出す。
+                        JSONObject jsonObjectItems = jsonArrayItems.getJSONObject(0);
+                        //snippetの中身
+                        String snippet = jsonObjectItems.getString("snippet");
+                        //チャンネルの元のID
+                        String channelId = jsonObjectItems.getJSONObject("snippet").getString("channelId");
+                        //チャンネル名
+                        String title = jsonObjectItems.getJSONObject("snippet").getString("title");
+                        //取得したデータを保存する
+                        Channel_ID = channelId;
+                        Channel_Name = title;
+                        System.out.println(Channel_ID + "&&&" + Channel_Name);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+        requestQueue.add(request);
     }
 
     //Youtube Data API V3(search)を使用して指定のチャンネルからアップロードされている動画のIDをリクエストし、レスポンスとして入手できるJson形式のデータをStringとして抜き出す。
@@ -217,10 +259,8 @@ public class MainActivity extends AppCompatActivity {
                         //動画の本数をカウントする。
                         videoSum++;
 
-                        //System.out.println(i+1 + "週目のsearchの動画ID：" + youtubeDataArray.get(i));
-
                     }
-                    //System.out.println("searchの最終結果：" + youtubeDataArray);
+                    System.out.println("これがサーチの結果："+ youtubeDataArray);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
