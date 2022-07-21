@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/id_toolbar"
         android:layout_centerHorizontal="true"
-        android:text="チャンネルIDを入力" />
+        android:hint="チャンネルIDを入力" />
 
 
     </RelativeLayout>

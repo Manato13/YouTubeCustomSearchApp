@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.HashMap;
@@ -12,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.Manifest;
@@ -51,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
     //APIKey(ここで確認　https://console.cloud.google.com/apis/dashboard?project=red-function-354800)
     static private final String API_KEY = "AIzaSyAP-mnDKDFJLJ8hxPkJzIQN5hvTgctBne8";
     //制作過程で一時的に使用するパラメーター（完成版では任意に）
-    public String Channel_ID = "UClSsb_e0HDQ-w7XuwNPgGqQ";
-    public static String Max_Results = "15";
+    public String Channel_ID = "UChu8Yu_w9z8DGFtXzuGvDlg";
+    public static String Max_Results = "3";
     public String Video_ID;
     //取得した動画の情報を保存する二次元ArrayList配列
     public ArrayList<ArrayList<String>> youtubeDataArray = new ArrayList<ArrayList<String>>();
@@ -64,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
     SortVideos sortVideos;
     //ループした回数
     public int loop = 0;
+    //出力するファイルの名前
+    public String fileName = "data.csv";
 
     private final int REQUEST_CODE = 1000;
 
@@ -120,9 +126,22 @@ public class MainActivity extends AppCompatActivity {
         buttonCsv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //ExportCsvクラスを呼び出してファイルを作成する。
-                exportCsv = new ExportCsv(youtubeDataArray);
+                //youtubeDataArrayが空っぽでないかどうかを確認する
+                if (youtubeDataArray != null) {
+                    //ExportCsvクラスを呼び出してファイルを作成する。
+                    exportCsv = new ExportCsv();
+                    //exportCsv.ConvertARtoST(youtubeDataArray);(Stringを返す)
+                    //csvファイルを書き込む
+                    //openFileOutput()はMainActivity内でしか使えない
+                    try(FileOutputStream fileOutputStream = openFileOutput(fileName, Context.MODE_APPEND)){
+                        //fileOutputStream.write(exportCsv.ConvertARtoST(youtubeDataArray).getBytes(StandardCharsets.UTF_8));
+                        fileOutputStream.write(exportCsv.ConvertARtoST(youtubeDataArray).getBytes(StandardCharsets.UTF_16BE));
+                        System.out.println("書き込みに成功しました");
+                    }catch (IOException e){
+                        System.out.println("書き込みに失敗しました");
+                        e.printStackTrace();
+                    }
+                }
             }
         });
 
@@ -130,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
         buttonSort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 //SortVideosクラスを呼び出して並べ替えを実行する。
                 sortVideos = new SortVideos();
                 //とりあえず今は4番モード（高評価）で実行

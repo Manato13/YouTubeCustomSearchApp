@@ -1,21 +1,36 @@
 package jp.ac.gifu_u.z3033116.progjissen2finalassignment;
 
-/*
+
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.PrintWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import android.Manifest;
 
+import android.content.Intent;
+import android.os.Bundle;
+
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
 
 //import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -24,105 +39,55 @@ import java.io.InputStreamReader;
 
 
 public class ExportCsv {
-    //フィールド変数部
 
+String fileName1111 = "data.csv";
+String mainData;
+public int NumOfVideos = Integer.parseInt(MainActivity.Max_Results); //動画の本数（一時的に使う）
 
-    //コンストラクタ部
-    ExportCsv(ArrayList<ArrayList<String>> DataArray){
-
-        try {
-            // 出力ファイルの作成
-            //出力先を作成する
-            //FileWriter fw = new FileWriter("YoutubeData.csv", false);
-            FileWriter fw = new FileWriter(Environment.getExternalStorageDirectory().getPath() + "/YoutubeData.csv", false);
-
-            // PrintWriterクラスのオブジェクトを生成
-            PrintWriter pw = new PrintWriter(new BufferedWriter(fw));
-
-            // ヘッダーの指定
-            pw.print("タイトル");
-            pw.print(",");
-            pw.print("投稿日時");
-            pw.print(",");
-            pw.print("動画ID");
-            pw.print(",");
-            pw.print("再生回数");
-            pw.print(",");
-            pw.print("高評価数");
-            pw.print(",");
-            pw.print("コメント数");
-            pw.println(); //改行
-
-            // データを書き込む
-            for(int i = 0; i < DataArray.size(); i++){
-                for(int p = 0; p < 6; p++){
-                    pw.print(DataArray.get(i).get(p));
-                    pw.print(",");
+//メソッド部
+    //二次元ListArray型だったデータをコンマと改行で区切られたString型の文字列に変換する
+    public String ConvertARtoST(ArrayList<ArrayList<String>> YTarray){
+        //ファイルに書き込むための文字列を作成する
+        StringBuilder sb = new StringBuilder();
+        //↓↓↓↓youtubeDataArrayの各配列の中の凡例↓↓↓↓
+        //0.タイトル、1.投稿日時、2.動画ID、3.再生回数、4.高評価数、5.コメント数、6.動画のインデックス番号
+        //まずは最上部（データ名）の作成
+        sb.append("タイトル,");
+        sb.append("投稿日時,");
+        sb.append("動画ID,");
+        sb.append("再生回数,");
+        sb.append("高評価数,");
+        sb.append("コメント数");
+        sb.append("\n");
+        //実際に取得したデータを追加していく
+        //for(ArrayList<String> subYTarray : YTarray) { 前後が逆になる不具合が治ったら使う
+        for(int i = 0; i< NumOfVideos; i++){ //仮
+            for(int k = 0; k < 6; k++) {
+                sb.append(YTarray.get(i).get(k)); //仮
+                //sb.append(subYTarray.get(k)); 前後が逆になる不具合が治ったら使う
+                if(k==5){
+                    //コメント数のところまで追加したら改行する
+                    sb.append("\n");
                 }
-                pw.println(); //改行
+                else{
+                    //それまではコンマで区切る
+                    sb.append(",");
+                }
+                }
             }
-
-            // ファイルを閉じる
-            pw.close();
-
-            // 出力確認用のメッセージ
-            System.out.println("csvファイルを出力しました");
-
-            // 出力に失敗したときの処理
-        } catch (IOException ex) {
-            System.out.println("csvファイルを出力できませんでした。");
-            ex.printStackTrace();
-        }
+        //データをコンマと改行で区切った文字列を返す
+        System.out.println(sb.toString());
+        return sb.toString();
     }
 
+//public void writeCsvFile(String fileName, String data){
+//    try(FileOutputStream fileOutputStream = openFileOutput(fileName,Context.MODE_APPEND)){
+//        fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
+//    }catch (IOException e){
+//        e.printStackTrace();
+//    }
+//}
+
+
+
 }
-
- */
-
-import android.os.Environment;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-
-public class ExportCsv {
-
-    ExportCsv(ArrayList<ArrayList<String>> DataArray) {
-        try {
-            //出力先を作成する
-            FileWriter fw = new FileWriter(Environment.getExternalStorageDirectory().getPath() + "/test.csv", false);
-            PrintWriter pw = new PrintWriter(new BufferedWriter(fw));
-
-            //内容を指定する
-            pw.print("あ");
-            pw.print(",");
-            pw.print("い");
-            pw.println();
-
-            pw.print("01");
-            pw.print(",");
-            pw.print("02");
-            pw.println();
-
-            //ファイルに書き出す
-            pw.close();
-
-            //終了メッセージを画面に出力する
-            System.out.println("出力が完了しました。");
-
-        } catch (IOException ex) {
-            //例外時処理
-            ex.printStackTrace();
-            System.out.println("出力に失敗しました。");
-        }
-
-    }
-}
-
-
-
-
-
