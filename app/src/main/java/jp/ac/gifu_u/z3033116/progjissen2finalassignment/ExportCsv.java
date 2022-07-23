@@ -60,11 +60,11 @@ public int NumOfVideos = Integer.parseInt(MainActivity.Max_Results); //動画の
         sb.append("コメント数");
         sb.append("\n");
         //実際に取得したデータを追加していく
-        //for(ArrayList<String> subYTarray : YTarray) { 前後が逆になる不具合が治ったら使う
-        for(int i = 0; i< NumOfVideos; i++){ //仮
+        for(ArrayList<String> subYTarray : YTarray) { //前後が逆になる不具合が治ったら使う
+        //for(int i = 0; i< NumOfVideos; i++){ //仮
             for(int k = 0; k < 6; k++) {
-                sb.append(YTarray.get(i).get(k)); //仮
-                //sb.append(subYTarray.get(k)); 前後が逆になる不具合が治ったら使う
+                //sb.append(YTarray.get(i).get(k)); //仮
+                sb.append(subYTarray.get(k)); //前後が逆になる不具合が治ったら使う
                 if(k==5){
                     //コメント数のところまで追加したら改行する
                     sb.append("\n");

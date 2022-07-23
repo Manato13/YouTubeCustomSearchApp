@@ -53,12 +53,12 @@ public class MainActivity extends AppCompatActivity {
     private EditText editText;
     private RequestQueue requestQueue;
     //APIKey(ここで確認　https://console.cloud.google.com/apis/dashboard?project=red-function-354800)
-    static private final String API_KEY = "AIzaSyAP-mnDKDFJLJ8hxPkJzIQN5hvTgctBne8";
-    //制作過程で一時的に使用するパラメーター（完成版では任意に）
-    public String Channel_ID = "";
-    public String Channel_URL;
-    public String Channel_Name;
-    public static String Max_Results = "3";
+    //static private final String API_KEY = "AIzaSyAP-mnDKDFJLJ8hxPkJzIQN5hvTgctBne8";
+    static private final String API_KEY = "AIzaSyBIF6ehSgidGb4Q9Md64N4dfwp779dQpiI"; //sub
+    //チャンネルのURL、カスタムされていないID、名前を格納する
+    public String Channel_URL, Channel_ID, Channel_Name;
+    public static String Max_Results = "10";
+    //取得した動画のIDをまとめて格納する
     public String Video_ID;
     //取得した動画の情報を保存する二次元ArrayList配列
     public ArrayList<ArrayList<String>> youtubeDataArray = new ArrayList<ArrayList<String>>();
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     //ループした回数
     public int loop = 0;
     //出力するファイルの名前
-    public String fileName = "data.csv";
+    public String fileName;
 
     private final int REQUEST_CODE = 1000;
 
@@ -111,14 +111,9 @@ public class MainActivity extends AppCompatActivity {
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //Log.i("test",Channel_ID + "\n" );
-                jsonSearch();
-                //fakeSearch();
-                //Log.i("test","search完了時点で取得したデータ" + youtubeDataArray + "\n" );
-                //makeVideoId();
-                //jsonVideo();
-                //Log.i("test","video完了時点で取得したデータ" + youtubeDataArray + "\n" );
+                // 入力したURLを使ってAPIを使用しカスタムされていないチャンネルIDを取得
+                Channel_URL = editText.getText().toString();
+                jsonFindChannelID();
                 //https://www.google.com/search?q=android+studio+AcyncLoader&rlz=1C1FQRR_jaJP977JP977&sxsrf=ALiCzsZYwBa_35HQEyBgshbhEWyVxDMTOw%3A1658145621294&ei=VUvVYs2hEe3s2roPsqGhyAU&ved=0ahUKEwiNoPjlsYL5AhVttlYBHbJQCFkQ4dUDCA4&uact=5&oq=android+studio+AcyncLoader&gs_lcp=Cgdnd3Mtd2l6EAM6BwgAEEcQsAM6CwgAEIAEEAQQJRAgOgQIIxAnOgUIABCABEoECEEYAEoECEYYAFD1BVj-DmDgEGgBcAB4AIABgwGIAYMEkgEDMy4ymAEAoAEBoAECyAEKwAEB&sclient=gws-wiz
             }
         });
@@ -127,20 +122,16 @@ public class MainActivity extends AppCompatActivity {
         buttonCsv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 入力したURLを使ってAPIを使用しカスタムされていないチャンネルIDを取得
-                Channel_URL = editText.getText().toString();
-                jsonFindChannelID();
-
-                /*
                 //youtubeDataArrayが空っぽでないかどうかを確認する
                 if (youtubeDataArray != null) {
+                    //出力するファイル名を「チャンネル名.csv」にする。
+                    fileName = Channel_Name + ".csv";
                     //ExportCsvクラスを呼び出してファイルを作成する。
                     exportCsv = new ExportCsv();
-                    //exportCsv.ConvertARtoST(youtubeDataArray);(Stringを返す)
                     //csvファイルを書き込む
                     //openFileOutput()はMainActivity内でしか使えない
                     try(FileOutputStream fileOutputStream = openFileOutput(fileName, Context.MODE_APPEND)){
-                        //fileOutputStream.write(exportCsv.ConvertARtoST(youtubeDataArray).getBytes(StandardCharsets.UTF_8));
+                        //exportCsv.ConvertARtoST(youtubeDataArray)はcsvファイルに書き込むためのStringを返す
                         fileOutputStream.write(exportCsv.ConvertARtoST(youtubeDataArray).getBytes(StandardCharsets.UTF_8));
                         System.out.println("書き込みに成功しました");
                     }catch (IOException e){
@@ -148,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-                */
             }
         });
 
@@ -160,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 sortVideos = new SortVideos();
                 //selectMode一覧：1.投稿日時、3.再生回数、4.高評価数、5.コメント数、7.隠れた名作
                 //とりあえず今は4番モード（高評価）で実行
+                //sortがtrueならば昇順、falseなら降順
                 sortVideos.sortMethod(false,sortVideos.preForSort(7,youtubeDataArray),youtubeDataArray);
             }
         });
@@ -208,7 +199,9 @@ public class MainActivity extends AppCompatActivity {
                         //取得したデータを保存する
                         Channel_ID = channelId;
                         Channel_Name = title;
-                        System.out.println(Channel_ID + "&&&" + Channel_Name);
+                        System.out.println(Channel_ID + "と" + Channel_Name);
+                        //数珠つなぎで次のAPI(Search)を使用する関数を指定する。
+                        jsonSearch();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -224,13 +217,14 @@ public class MainActivity extends AppCompatActivity {
 
     //Youtube Data API V3(search)を使用して指定のチャンネルからアップロードされている動画のIDをリクエストし、レスポンスとして入手できるJson形式のデータをStringとして抜き出す。
     private void jsonSearch() {
-        String url = "https://www.googleapis.com/youtube/v3/search?fields=items/id/videoId,items/snippet/publishedAt,items/snippet/title&order=date&part=id,snippet&maxResults=" + Max_Results + "&channelId=" + Channel_ID + "&key=" + API_KEY;
+        String url = "https://www.googleapis.com/youtube/v3/search?fields=items/id/videoId,items/snippet/publishedAt,items/snippet/title&order=viewCount&part=id,snippet&maxResults=" + Max_Results + "&channelId=" + Channel_ID + "&key=" + API_KEY;
         //System.out.println(url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     JSONArray jsonArrayItems = response.getJSONArray("items");
+
                     for (int i = 0; i < jsonArrayItems.length(); i++) {
                         //json形式のデータから必要なものを取り出す。
                         JSONObject jsonObjectItems = jsonArrayItems.getJSONObject(i);
@@ -246,6 +240,7 @@ public class MainActivity extends AppCompatActivity {
                         String videoId = jsonObjectItems.getJSONObject("id").getString("videoId");
                         //参考(https://ja.stackoverflow.com/questions/47502/%E3%83%8D%E3%82%B9%E3%83%88%E3%81%95%E3%82%8C%E3%81%A6%E3%82%8Bjson%E3%81%AE%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E5%8F%96%E5%BE%97%E3%81%97%E3%81%9F%E3%81%84)
 
+
                         //二次元ArrayListの要素になるArrayListを作る
                         ArrayList<String> tmpArray = new ArrayList<>();
                         //取り出したデータをArrayListの中に格納する。
@@ -260,7 +255,8 @@ public class MainActivity extends AppCompatActivity {
                         videoSum++;
 
                     }
-                    System.out.println("これがサーチの結果："+ youtubeDataArray);
+                    //数珠つなぎで次に使用する関数(動画IDの作成)を指定する。
+                    makeVideoId();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -284,20 +280,19 @@ public class MainActivity extends AppCompatActivity {
                 Video_ID = Video_ID + youtubeDataArray.get(m).get(2);
             }
             else{
-                //Log.i("test",youtubeDataArray.get(m).get(2) + "\n" + "makeVideoの中、中身ある？" );
                 Video_ID = Video_ID + youtubeDataArray.get(m).get(2) + ",";
             }
         }
-        System.out.println("複数の動画ID：" + Video_ID);
         videoSum = 0; //初期化しておく
+        //数珠つなぎで次のAPI(Videos)を使用する関数を指定する。
+        jsonVideo();
     }
 
 
 
 
-    //Youtube Data API V3(video)を使用して先ほど取得した動画のIDを元にそれらの詳細なデータをリクエストし、レスポンスとして入手できるJson形式のデータをStringとして抜き出す。
+    //Youtube Data API V3(videos)を使用して先ほど取得した動画のIDを元にそれらの詳細なデータをリクエストし、レスポンスとして入手できるJson形式のデータをStringとして抜き出す。
     private void jsonVideo() {
-
         String url = "https://www.googleapis.com/youtube/v3/videos?part=statistics&fields=items/statistics&maxResults=" + Max_Results + "&id=" + Video_ID + "&key=" + API_KEY;
         //System.out.println(url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -318,16 +313,15 @@ public class MainActivity extends AppCompatActivity {
                         //コメント数
                         String commentCount = jsonObjectItems.getJSONObject("statistics").getString("commentCount");
 
-                        //取り出したデータをArrayListの中に格納する。search
+                        //取り出したデータをArrayListの中に格納する。
                         youtubeDataArray.get(i).add(viewCount);
                         youtubeDataArray.get(i).add(likeCount);
                         youtubeDataArray.get(i).add(commentCount);
                         //動画を識別するための固有のインデックスを追加する。
                         youtubeDataArray.get(i).add("" + (100*loop+i));
                         //tmpArray.clear();
-
                     }
-                    //System.out.println(youtubeDataArray);
+                    Log.i("test","jsonVideo完了時点で取得したデータ" + youtubeDataArray + "\n" );
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -342,54 +336,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //try {
-//        Thread.sleep(10000); // 1秒(1000ミリ秒)間だけ処理を止める
-//        } catch (InterruptedException e) {
-//        }
-
-    private void fakeSearch() { //APIを圧迫しないように...
-        //for (int i = 0; i < 5; i++) {
-            //二次元ArrayListの要素になるArrayListを作る
-            ArrayList<String> tmpArray1 = new ArrayList<>();
-            //取り出したデータをArrayListの中に格納する。
-            tmpArray1.add("仮タイトル"+ 1 + "本目");
-            tmpArray1.add("仮日時時刻"+ 1 + "本目");
-            tmpArray1.add("yGFsJId5euM");
-            youtubeDataArray.add(tmpArray1);
-
-        ArrayList<String> tmpArray2 = new ArrayList<>();
-        //取り出したデータをArrayListの中に格納する。
-        tmpArray2.add("仮タイトル"+ 2 + "本目");
-        tmpArray2.add("仮日時時刻"+ 2 + "本目");
-        tmpArray2.add("tO4vhehooBs");
-        youtubeDataArray.add(tmpArray2);
-
-        ArrayList<String> tmpArray3 = new ArrayList<>();
-        //取り出したデータをArrayListの中に格納する。
-        tmpArray3.add("仮タイトル"+ 3 + "本目");
-        tmpArray3.add("仮日時時刻"+ 3 + "本目");
-        tmpArray3.add("mPDyLJ7hSdk");
-        youtubeDataArray.add(tmpArray3);
-
-        ArrayList<String> tmpArray4 = new ArrayList<>();
-        //取り出したデータをArrayListの中に格納する。
-        tmpArray4.add("仮タイトル"+ 4 + "本目");
-        tmpArray4.add("仮日時時刻"+ 4 + "本目");
-        tmpArray4.add("pNh7kXHpVKc");
-        youtubeDataArray.add(tmpArray4);
-
-        ArrayList<String> tmpArray5 = new ArrayList<>();
-        //取り出したデータをArrayListの中に格納する。
-        tmpArray5.add("仮タイトル"+ 5 + "本目");
-        tmpArray5.add("仮日時時刻"+ 5 + "本目");
-        tmpArray5.add("gFganG1nM_w");
-        youtubeDataArray.add(tmpArray5);
-
-            //tmpArray.clear();
-
-            //動画の本数をカウントする。
-            videoSum = 5;
-        }
 
 
     // 位置情報許可の確認
