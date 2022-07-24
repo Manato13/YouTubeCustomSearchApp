@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import android.content.Context;
 import android.content.Intent;
@@ -51,15 +55,18 @@ public class MainActivity extends AppCompatActivity {
     //フィールド変数部
     private TextView textView;
     private EditText editText;
+    //Spinner(ソートの選択肢に使う)
+    private final String[] spinnerSortType = {"投稿日時", "再生回数", "高評価数", "コメント数", "隠れた名作", "ユーザーカスタム"};
+    private final String[] spinnerSortAscendDescend = {"昇順", "降順"};
     private RequestQueue requestQueue;
     //APIKey(ここで確認　https://console.cloud.google.com/apis/dashboard?project=red-function-354800)
     //static private final String API_KEY = "AIzaSyAP-mnDKDFJLJ8hxPkJzIQN5hvTgctBne8";
     static private final String API_KEY = "AIzaSyBIF6ehSgidGb4Q9Md64N4dfwp779dQpiI"; //sub
     //チャンネルのURL、カスタムされていないID、名前を格納する
     public String Channel_URL, Channel_ID, Channel_Name;
-    public static String Max_Results = "10";
+    public static String Max_Results = "50";
     //取得した動画のIDをまとめて格納する
-    public String Video_ID;
+    private String Video_ID;
     //取得した動画の情報を保存する二次元ArrayList配列
     public ArrayList<ArrayList<String>> youtubeDataArray = new ArrayList<ArrayList<String>>();
     //取得した動画の合計数
@@ -69,9 +76,14 @@ public class MainActivity extends AppCompatActivity {
     //動画を並べ替えるクラス
     SortVideos sortVideos;
     //ループした回数
-    public int loop = 0;
+    private int loop = 0;
     //出力するファイルの名前
-    public String fileName;
+    private String fileName;
+    //ソートの種類を管理する変数(初期値は投稿日時順)
+    private int SelectSortMode = 1;
+    //ソートを表示する順番を管理する変数(初期値は降順)
+    private boolean AsDes = false;
+
 
     private final int REQUEST_CODE = 1000;
 
@@ -83,28 +95,100 @@ public class MainActivity extends AppCompatActivity {
 
         textView = findViewById(R.id.text_view_result);
         textView.setTextColor(Color.RED);
-        //ボタン・テキストエディタの配置とIDの登録
+        //ボタン・テキストエディタなどの配置とIDの登録
         Button buttonSearch = findViewById(R.id.button_search);
         Button buttonCsv = findViewById(R.id.button_csv);
         Button buttonSort = findViewById(R.id.button_sort);
         Toolbar toolbar = findViewById(R.id.id_toolbar);
         editText = findViewById(R.id.editText_channelId);
 
-        setSupportActionBar(toolbar);
+        //ソートの種類を選択するプルダウンタブ
+        // ArrayAdapter(選択肢を良い具合に並べて設定。)
+        ArrayAdapter<String> adapterType = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
+        adapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //プルダウンメニューに要素を追加する
+        for(String sortType: spinnerSortType){
+            adapterType.add(sortType);
+        }
+        Spinner spinnerSortType = findViewById(R.id.spinnerSortType);
+        spinnerSortType.setAdapter(adapterType);
 
+        //ソートの昇順・降順を選択するプルダウンタブ
+        // ArrayAdapter(選択肢を良い具合に並べて設定。)
+        ArrayAdapter<String> adapterAsDes = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
+        adapterAsDes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //プルダウンメニューに要素を追加する
+        for(String sortAsDes: spinnerSortAscendDescend){
+            adapterAsDes.add(sortAsDes);
+        }
+        Spinner spinnerSortAsDes = findViewById(R.id.spinnerSortAsDes);
+        spinnerSortAsDes.setAdapter(adapterAsDes);
+
+
+        setSupportActionBar(toolbar);
         requestQueue = Volley.newRequestQueue(this);
 
-/*
-        //外部ストレージを使用するので権限のリクエストをする。
-        // Android 6, API 23以上でパーミッションの確認
-        if(Build.VERSION.SDK_INT >= 23) {
-            String[] permissions = {
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            };
-            checkPermission(permissions, REQUEST_CODE);
-        }
 
- */
+        //ソートの種類を選択するプルタブ
+        spinnerSortType.setOnItemSelectedListener(new OnItemSelectedListener() {
+            //アイテムが選択された時
+            @Override
+            public void onItemSelected(AdapterView<?> parent,
+                                       View view, int position, long id) {
+                Spinner spinner = (Spinner)parent;
+                String item = (String)spinner.getSelectedItem();
+                //選ばれたソートの種類をSelectSortModeに渡す
+                switch(item){
+                    case "投稿日時":
+                        SelectSortMode = 1;
+                        break;
+                    case "再生回数":
+                        SelectSortMode = 3;
+                        break;
+                    case "高評価数":
+                        SelectSortMode = 4;
+                        break;
+                    case "コメント数":
+                        SelectSortMode = 5;
+                        break;
+                    case "隠れた名作":
+                        SelectSortMode = 7;
+                        break;
+                    case "ユーザーカスタム":
+                        SelectSortMode = 9;
+                }
+                //textView.setText(item);
+            }
+            //　アイテムが選択されなかった
+            public void onNothingSelected(AdapterView<?> parent) {
+                //特に処理なし
+            }
+        });
+
+
+        //ソートの昇順・降順を選択するプルタブ
+        spinnerSortAsDes.setOnItemSelectedListener(new OnItemSelectedListener() {
+            //アイテムが選択された時
+            @Override
+            public void onItemSelected(AdapterView<?> parent,
+                                       View view, int position, long id) {
+                Spinner spinner = (Spinner)parent;
+                String item = (String)spinner.getSelectedItem();
+                //選ばれたソートの種類をSelectSortModeに渡す
+                switch(item){
+                    case "昇順":
+                        AsDes = true;
+                        break;
+                    case "降順":
+                        AsDes = false;
+                }
+            }
+            //　アイテムが選択されなかった
+            public void onNothingSelected(AdapterView<?> parent) {
+                //特に処理なし
+            }
+        });
+
 
 
         //APIを使用を開始するボタン
@@ -149,9 +233,8 @@ public class MainActivity extends AppCompatActivity {
                 //SortVideosクラスを呼び出して並べ替えを実行する。
                 sortVideos = new SortVideos();
                 //selectMode一覧：1.投稿日時、3.再生回数、4.高評価数、5.コメント数、7.隠れた名作
-                //とりあえず今は4番モード（高評価）で実行
                 //sortがtrueならば昇順、falseなら降順
-                sortVideos.sortMethod(false,sortVideos.preForSort(7,youtubeDataArray),youtubeDataArray);
+                sortVideos.sortMethod(AsDes,sortVideos.preForSort(SelectSortMode,youtubeDataArray),youtubeDataArray);
             }
         });
 
