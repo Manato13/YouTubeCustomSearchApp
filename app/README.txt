@@ -16,3 +16,6 @@ https://console.cloud.google.com/apis/credentials?organizationId=0&project=red-f
 公式ドキュメント：
 API(video)   https://developers.google.com/youtube/v3/docs/videos/list?hl=ja
 API(search)
+
+[Android] Storage Access Framework：
+https://akira-watson.com/android/action_create_document.html

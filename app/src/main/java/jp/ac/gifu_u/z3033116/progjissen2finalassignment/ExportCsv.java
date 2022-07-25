@@ -46,7 +46,7 @@ public int NumOfVideos = Integer.parseInt(MainActivity.Max_Results); //動画の
 
 //メソッド部
     //二次元ListArray型だったデータをコンマと改行で区切られたString型の文字列に変換する
-    public String ConvertARtoST(ArrayList<ArrayList<String>> YTarray){
+    public static String ConvertARtoST(ArrayList<ArrayList<String>> YTarray){
         //ファイルに書き込むための文字列を作成する
         StringBuilder sb = new StringBuilder();
         //↓↓↓↓youtubeDataArrayの各配列の中の凡例↓↓↓↓

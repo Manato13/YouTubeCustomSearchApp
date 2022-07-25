@@ -2,28 +2,18 @@ package jp.ac.gifu_u.z3033116.progjissen2finalassignment;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.HashMap;
-import java.util.List;
+import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+
+import android.net.Uri;
+import android.text.TextUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.Manifest;
-import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
 import android.widget.EditText;
@@ -43,12 +33,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import android.app.Activity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
     //static private final String API_KEY = "AIzaSyAP-mnDKDFJLJ8hxPkJzIQN5hvTgctBne8";
     static private final String API_KEY = "AIzaSyBIF6ehSgidGb4Q9Md64N4dfwp779dQpiI"; //sub
     //チャンネルのURL、カスタムされていないID、名前を格納する
-    public String Channel_URL, Channel_ID, Channel_Name;
-    public static String Max_Results = "50";
+    public String Channel_URL, tmpChannel_URL, Channel_ID, Channel_Name;
+    public static String Max_Results = "15";
     //取得した動画のIDをまとめて格納する
     private String Video_ID;
     //取得した動画の情報を保存する二次元ArrayList配列
@@ -73,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
     public int videoSum = 0;
     //csvファイルを出力するクラス
     ExportCsv exportCsv;
+    //csvファイルに書き込むための文字列を保存する変数
+    public String csvToShare;
     //動画を並べ替えるクラス
     SortVideos sortVideos;
     //ループした回数
@@ -84,8 +78,7 @@ public class MainActivity extends AppCompatActivity {
     //ソートを表示する順番を管理する変数(初期値は降順)
     private boolean AsDes = false;
 
-
-    private final int REQUEST_CODE = 1000;
+    private final int CREATE_DOCUMENT_REQUEST = 1000;
 
     //コンストラクタ部(=onCreate)
     @Override
@@ -101,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         Button buttonSort = findViewById(R.id.button_sort);
         Toolbar toolbar = findViewById(R.id.id_toolbar);
         editText = findViewById(R.id.editText_channelId);
+        Button csvOutputBtn = (Button) findViewById(R.id.button_csv);
 
         //ソートの種類を選択するプルダウンタブ
         // ArrayAdapter(選択肢を良い具合に並べて設定。)
@@ -197,44 +191,40 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // 入力したURLを使ってAPIを使用しカスタムされていないチャンネルIDを取得
                 Channel_URL = editText.getText().toString();
-                jsonFindChannelID();
-                //https://www.google.com/search?q=android+studio+AcyncLoader&rlz=1C1FQRR_jaJP977JP977&sxsrf=ALiCzsZYwBa_35HQEyBgshbhEWyVxDMTOw%3A1658145621294&ei=VUvVYs2hEe3s2roPsqGhyAU&ved=0ahUKEwiNoPjlsYL5AhVttlYBHbJQCFkQ4dUDCA4&uact=5&oq=android+studio+AcyncLoader&gs_lcp=Cgdnd3Mtd2l6EAM6BwgAEEcQsAM6CwgAEIAEEAQQJRAgOgQIIxAnOgUIABCABEoECEEYAEoECEYYAFD1BVj-DmDgEGgBcAB4AIABgwGIAYMEkgEDMy4ymAEAoAEBoAECyAEKwAEB&sclient=gws-wiz
-            }
-        });
-
-        //csvファイルを出力するボタン
-        buttonCsv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //youtubeDataArrayが空っぽでないかどうかを確認する
-                if (youtubeDataArray != null) {
-                    //出力するファイル名を「チャンネル名.csv」にする。
-                    fileName = Channel_Name + ".csv";
-                    //ExportCsvクラスを呼び出してファイルを作成する。
-                    exportCsv = new ExportCsv();
-                    //csvファイルを書き込む
-                    //openFileOutput()はMainActivity内でしか使えない
-                    try(FileOutputStream fileOutputStream = openFileOutput(fileName, Context.MODE_APPEND)){
-                        //exportCsv.ConvertARtoST(youtubeDataArray)はcsvファイルに書き込むためのStringを返す
-                        fileOutputStream.write(exportCsv.ConvertARtoST(youtubeDataArray).getBytes(StandardCharsets.UTF_8));
-                        System.out.println("書き込みに成功しました");
-                    }catch (IOException e){
-                        System.out.println("書き込みに失敗しました");
-                        e.printStackTrace();
+                if(Channel_URL != "" && Channel_URL != tmpChannel_URL){
+                    tmpChannel_URL = Channel_URL;
+                    jsonFindChannelID();
+                }
+                else{
+                    if(Channel_URL == ""){
+                        showToast("チャンネルのURLを入力してください。");
+                    }
+                    else if(Channel_URL == tmpChannel_URL){
+                        showToast("既にこのチャンネルの検索結果を取得しています。");
                     }
                 }
             }
         });
 
+        //csvファイルを作成し、Storage Access Frameworkを起動するボタン
+        csvOutputBtn.setOnClickListener( v ->createFile());
+
         //動画を並べ替えるボタン
         buttonSort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //SortVideosクラスを呼び出して並べ替えを実行する。
-                sortVideos = new SortVideos();
-                //selectMode一覧：1.投稿日時、3.再生回数、4.高評価数、5.コメント数、7.隠れた名作
-                //sortがtrueならば昇順、falseなら降順
-                sortVideos.sortMethod(AsDes,sortVideos.preForSort(SelectSortMode,youtubeDataArray),youtubeDataArray);
+                //配列が空っぽでなかったら
+                if(youtubeDataArray.size() != 0){
+                    //SortVideosクラスを呼び出して並べ替えを実行する。
+                    sortVideos = new SortVideos();
+                    //selectMode一覧：1.投稿日時、3.再生回数、4.高評価数、5.コメント数、7.隠れた名作
+                    //sortがtrueならば昇順、falseなら降順
+                    sortVideos.sortMethod(AsDes,sortVideos.preForSort(SelectSortMode,youtubeDataArray),youtubeDataArray);
+                }
+                //配列に何もデータが無かったら
+                else{
+                    showToast("URLを入力しsearchを行った後、再度実行してください。");
+                }
             }
         });
 
@@ -265,7 +255,8 @@ public class MainActivity extends AppCompatActivity {
     //Youtube Data API V3(search)を使用して入力されたチャンネルURLから、カスタムされていない「元のチャンネルID」とチャンネル名を取得する。
     private void jsonFindChannelID() {
         String url = "https://www.googleapis.com/youtube/v3/search?fields=items/snippet/channelId,items/snippet/title&part=snippet&maxResults=1&type=channel&q=" + Channel_URL + "&key=" + API_KEY;
-        //System.out.println(url);
+        //参考↓
+        //https://www.google.com/search?q=android+studio+AcyncLoader&rlz=1C1FQRR_jaJP977JP977&sxsrf=ALiCzsZYwBa_35HQEyBgshbhEWyVxDMTOw%3A1658145621294&ei=VUvVYs2hEe3s2roPsqGhyAU&ved=0ahUKEwiNoPjlsYL5AhVttlYBHbJQCFkQ4dUDCA4&uact=5&oq=android+studio+AcyncLoader&gs_lcp=Cgdnd3Mtd2l6EAM6BwgAEEcQsAM6CwgAEIAEEAQQJRAgOgQIIxAnOgUIABCABEoECEEYAEoECEYYAFD1BVj-DmDgEGgBcAB4AIABgwGIAYMEkgEDMy4ymAEAoAEBoAECyAEKwAEB&sclient=gws-wiz
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -286,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
                         //数珠つなぎで次のAPI(Search)を使用する関数を指定する。
                         jsonSearch();
                 } catch (JSONException e) {
+                    showToast("有効なチャンネルURLを入力してください。");
                     e.printStackTrace();
                 }
             }
@@ -323,21 +315,16 @@ public class MainActivity extends AppCompatActivity {
                         String videoId = jsonObjectItems.getJSONObject("id").getString("videoId");
                         //参考(https://ja.stackoverflow.com/questions/47502/%E3%83%8D%E3%82%B9%E3%83%88%E3%81%95%E3%82%8C%E3%81%A6%E3%82%8Bjson%E3%81%AE%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E5%8F%96%E5%BE%97%E3%81%97%E3%81%9F%E3%81%84)
 
-
                         //二次元ArrayListの要素になるArrayListを作る
                         ArrayList<String> tmpArray = new ArrayList<>();
                         //取り出したデータをArrayListの中に格納する。
                         tmpArray.add(title);
                         tmpArray.add(publishedAt);
                         tmpArray.add(videoId);
-
                         youtubeDataArray.add(tmpArray);
-                        //tmpArray.clear();
-
-                        //動画の本数をカウントする。
-                        videoSum++;
-
                     }
+                    //取得した動画の本数をカウント
+                    videoSum = youtubeDataArray.size();
                     //数珠つなぎで次に使用する関数(動画IDの作成)を指定する。
                     makeVideoId();
                 } catch (JSONException e) {
@@ -418,42 +405,68 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add(request);
     }
 
+    /*
+    //共有画面を開くメソッド
+    private void shareCsv(){
+        //csvファイルを送信するインテント
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        //MIMEデータタイプの指定
+        shareIntent.setType("text/csv");
+        //メールでも送信できるようにする
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT,"Subject Here");
+        //shareIntent.putExtra(Intent.EXTRA_TEXT,csvToShare);
+        //shareIntent.putExtra(Intent.EXTRA_STREAM,csvUri);
+        //共有するファイルのディレクトリ指定
+        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(csvUri)) ;
+        shareIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivity(Intent.createChooser(shareIntent, "share file with"));
+    }
+     */
 
-
-
-    // 位置情報許可の確認
-    public void checkPermission(final String[] permissions,final int request_code){
-        // 許可されていないものだけダイアログが表示される
-        ActivityCompat.requestPermissions(this, permissions, request_code);
+    //トーストはこの関数を使って表示する
+    private void showToast(String message){
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    // requestPermissionsのコールバック
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
+    //ファイルを生成する関数
+    private void createFile() {
+        String fileName = Channel_Name + ".csv";
+        //ファイルを保存するディレクトリをユーザーが選択する標準エクスプローラー(Storage Access Framework)の準備
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        //MIMEタイプの指定
+        intent.setType("text/csv");
+        intent.putExtra(Intent.EXTRA_TITLE, fileName);
+        resultLauncher.launch(intent);
+    }
 
-            case REQUEST_CODE:
-                for (int i = 0; i < permissions.length; i++) {
-                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        Toast toast = Toast.makeText(this,
-                                "Added Permission: " + permissions[i], Toast.LENGTH_SHORT);
-                        toast.show();
-                    } else {
-                        Toast toast = Toast.makeText(this,
-                                "Rejected Permission: " + permissions[i], Toast.LENGTH_SHORT);
-                        toast.show();
+    ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent resultData  = result.getData();
+                    if (resultData  != null) {
+                        Uri uri = resultData.getData();
+
+                        csvToShare =  ExportCsv.ConvertARtoST(youtubeDataArray);
+                        if(TextUtils.isEmpty(csvToShare)){
+                            showToast("書き込むデータが存在しません");
+                        }
+                        else {
+
+                            try (OutputStream outputStream =
+                                         getContentResolver().openOutputStream(uri)) {
+                                if (outputStream != null) {
+                                    outputStream.write(csvToShare.getBytes());
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
-                break;
-            default:
-                break;
-        }
-    }
-
-
-
-
+            });
 
 }
 
