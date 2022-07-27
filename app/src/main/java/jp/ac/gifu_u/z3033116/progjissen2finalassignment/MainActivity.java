@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     //取得した動画のIDをまとめて格納する
     private String Video_ID;
     //取得した動画の情報を保存する二次元ArrayList配列
-    public ArrayList<ArrayList<String>> youtubeDataArray = new ArrayList<ArrayList<String>>();
+    public static ArrayList<ArrayList<String>> youtubeDataArray = new ArrayList<ArrayList<String>>();
     //取得した動画の合計数
     public int videoSum = 0;
     //csvファイルを出力するクラス
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     //csvファイルに書き込むための文字列を保存する変数
     public String csvToShare;
     //動画を並べ替えるクラス
-    SortVideos sortVideos;
+    //SortVideos sortVideos;
     //ループした回数
     private int loop = 0;
     //出力するファイルの名前
@@ -90,12 +90,14 @@ public class MainActivity extends AppCompatActivity {
         textView.setTextColor(Color.RED);
         //ボタン・テキストエディタなどの配置とIDの登録
         Button buttonSearch = findViewById(R.id.button_search);
-        Button buttonCsv = findViewById(R.id.button_csv);
+        //Button buttonCsv = findViewById(R.id.button_csv);
         Button buttonSort = findViewById(R.id.button_sort);
         Toolbar toolbar = findViewById(R.id.id_toolbar);
         editText = findViewById(R.id.editText_channelId);
         Button csvOutputBtn = (Button) findViewById(R.id.button_csv);
+        Button buttonTrans = findViewById(R.id.button_trans);
 
+        /*
         //ソートの種類を選択するプルダウンタブ
         // ArrayAdapter(選択肢を良い具合に並べて設定。)
         ArrayAdapter<String> adapterType = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
@@ -117,12 +119,14 @@ public class MainActivity extends AppCompatActivity {
         }
         Spinner spinnerSortAsDes = findViewById(R.id.spinnerSortAsDes);
         spinnerSortAsDes.setAdapter(adapterAsDes);
+        */
+
 
 
         setSupportActionBar(toolbar);
         requestQueue = Volley.newRequestQueue(this);
 
-
+/*
         //ソートの種類を選択するプルタブ
         spinnerSortType.setOnItemSelectedListener(new OnItemSelectedListener() {
             //アイテムが選択された時
@@ -182,6 +186,20 @@ public class MainActivity extends AppCompatActivity {
                 //特に処理なし
             }
         });
+        */
+
+        buttonTrans.setOnClickListener(v -> {
+            // Intent を生成
+            // 第一引数はこの処理のContext
+            // 第二引数に遷移先画面のSortActivityを指定
+            Intent newIntent = new Intent(buttonTrans.getContext(), SortActivity.class);
+
+            // Intent にデータを保存
+            newIntent.putExtra("KEY1", "value");
+
+            // 新規画面表示実行
+            startActivity(newIntent);
+        });
 
 
 
@@ -215,11 +233,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //配列が空っぽでなかったら
                 if(youtubeDataArray.size() != 0){
-                    //SortVideosクラスを呼び出して並べ替えを実行する。
-                    sortVideos = new SortVideos();
-                    //selectMode一覧：1.投稿日時、3.再生回数、4.高評価数、5.コメント数、7.隠れた名作
-                    //sortがtrueならば昇順、falseなら降順
-                    sortVideos.sortMethod(AsDes,sortVideos.preForSort(SelectSortMode,youtubeDataArray),youtubeDataArray);
+                    Intent newIntent = new Intent(buttonTrans.getContext(), SortActivity.class);
+                    // Intent にデータを保存
+                    newIntent.putExtra("KEY1", "value");
+                    // 新規画面表示実行
+                    startActivity(newIntent);
                 }
                 //配列に何もデータが無かったら
                 else{

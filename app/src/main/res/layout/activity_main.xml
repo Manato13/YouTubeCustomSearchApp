@@ -53,6 +53,7 @@
         android:layout_marginTop="20dp"
         android:text="csv" />
 
+
     <Spinner
         android:id="@+id/spinnerSortType"
         android:layout_width="150dp"
@@ -74,6 +75,16 @@
         android:spinnerMode="dialog"
         android:layout_marginTop="40dp"
         app:layout_constraintVertical_bias="0.3" />
+
+    <Button
+        android:id="@+id/button_trans"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/spinnerSortAsDes"
+        android:layout_marginBottom="30dp"
+        android:text="transTest" />
+
 
     <Button
         android:id="@+id/button_search"

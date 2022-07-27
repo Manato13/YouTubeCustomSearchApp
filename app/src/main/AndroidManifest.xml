@@ -46,6 +46,10 @@
 
 
         </activity>
+        <!--下記が追加した内容-->
+        <activity
+            android:name=".SortActivity"
+            android:exported="true"/>
     </application>
 
 </manifest>
