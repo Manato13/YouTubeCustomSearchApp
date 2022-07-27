@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     static private final String API_KEY = "AIzaSyBIF6ehSgidGb4Q9Md64N4dfwp779dQpiI"; //sub
     //チャンネルのURL、カスタムされていないID、名前を格納する
     public String Channel_URL, tmpChannel_URL, Channel_ID, Channel_Name;
-    public static String Max_Results = "15";
+    public static String Max_Results = "50";
     //取得した動画のIDをまとめて格納する
     private String Video_ID;
     //取得した動画の情報を保存する二次元ArrayList配列
