@@ -123,7 +123,7 @@ public class SortActivity extends AppCompatActivity {
         buttonSortVideos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mainActivity.youtubeDataArray.size() != 0){
+                if(StartMenu.youtubeDataArray.size() != 0){
                     //動画の並べ替えを実行する
                     sortYoutubeVideos();
                 }
@@ -142,7 +142,7 @@ public class SortActivity extends AppCompatActivity {
         sortVideos = new SortVideos();
         //selectMode一覧：1.投稿日時、3.再生回数、4.高評価数、5.コメント数、7.隠れた名作
         //sortがtrueならば昇順、falseなら降順
-        sortVideos.sortMethod(AsDes,sortVideos.preForSort(SelectSortMode,mainActivity.youtubeDataArray),mainActivity.youtubeDataArray);
+        sortVideos.sortMethod(AsDes,sortVideos.preForSort(SelectSortMode,StartMenu.youtubeDataArray),StartMenu.youtubeDataArray);
     }
 
     //トーストはこの関数を使って表示する

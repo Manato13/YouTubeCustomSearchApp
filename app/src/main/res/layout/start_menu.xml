@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/id_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        app:titleTextColor="@color/white"
+        />
+
+
+    <TextView
+        android:id="@+id/text_view_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/id_toolbar"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        />
+
+    <EditText
+        android:id="@+id/editText_channelId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/id_toolbar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:hint="チャンネルのURLを入力" />
+
+    <Button
+        android:id="@+id/button_sort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editText_channelId"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="sort" />
+
+
+    <Button
+        android:id="@+id/button_csv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_sort"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="csv" />
+
+
+    <Spinner
+        android:id="@+id/spinnerSortType"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:background="#aaa"
+        android:layout_below="@+id/button_csv"
+        android:layout_centerHorizontal="true"
+        android:spinnerMode="dialog"
+        android:layout_marginTop="40dp"
+        app:layout_constraintVertical_bias="0.3" />
+
+    <Spinner
+        android:id="@+id/spinnerSortAsDes"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:background="#bbb"
+        android:layout_below="@+id/spinnerSortType"
+        android:layout_centerHorizontal="true"
+        android:spinnerMode="dialog"
+        android:layout_marginTop="40dp"
+        app:layout_constraintVertical_bias="0.3" />
+
+    <Button
+        android:id="@+id/button_trans"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/spinnerSortAsDes"
+        android:layout_marginBottom="30dp"
+        android:text="transTest" />
+
+
+    <Button
+        android:id="@+id/button_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:text="search" />
+
+
+</RelativeLayout>

@@ -42,8 +42,7 @@ public class ExportCsv {
 
 String fileName1111 = "data.csv";
 String mainData;
-public int NumOfVideos = Integer.parseInt(MainActivity.Max_Results); //動画の本数（一時的に使う）
-
+public int NumOfVideos = Integer.parseInt(StartMenu.Max_Results); //動画の本数（一時的に使う）
 //メソッド部
     //二次元ListArray型だったデータをコンマと改行で区切られたString型の文字列に変換する
     public static String ConvertARtoST(ArrayList<ArrayList<String>> YTarray){

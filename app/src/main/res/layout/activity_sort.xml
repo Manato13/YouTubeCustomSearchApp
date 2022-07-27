@@ -10,6 +10,18 @@
         android:background="?attr/colorPrimary"
         />
 
+    <TextView
+        android:id="@+id/text_view_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:text="検索フェーズ"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="10dp"
+        />
+
     <Spinner
         android:id="@+id/spinnerSortType"
         android:layout_width="145dp"
@@ -42,5 +54,33 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="21dp"
         android:text="検索" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/spinnerSortType"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:isScrollContainer="false"
+        >
+<!--スクロールの中のレイアウト-->
+        <LinearLayout
+            android:id="@+id/LinearLayout"
+            android:orientation="vertical"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent">
+            <TextView
+                android:id="@+id/text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="「表示」を押すとDBのデータを全件表示します" />
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="２つ目のTextView" />
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>

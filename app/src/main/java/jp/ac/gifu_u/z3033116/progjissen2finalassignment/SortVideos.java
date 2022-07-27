@@ -15,7 +15,7 @@ import java.util.Comparator;
 public class SortVideos {
     //フィールド変数部
     //動画の本数
-    public int NumOfVideos = Integer.parseInt(MainActivity.Max_Results); //動画の本数（一時的に使う）
+    public int NumOfVideos = Integer.parseInt(StartMenu.Max_Results); //動画の本数（一時的に使う）
 
     //コンストラクタ部
 
