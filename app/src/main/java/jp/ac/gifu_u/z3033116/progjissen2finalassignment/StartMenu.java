@@ -58,8 +58,6 @@ import android.app.Activity;
 
 public class StartMenu extends Fragment {
     //フィールド変数部
-    SharedVIewModel sharedViewModel;
-    private View view;
     private TextView textView;
     private EditText editText;
     //Spinner(ソートの選択肢に使う)
@@ -93,6 +91,8 @@ public class StartMenu extends Fragment {
     //ソートを表示する順番を管理する変数(初期値は降順)
     private boolean AsDes = false;
     FragmentManager manager;
+    SharedVIewModel sharedViewModel;
+    private View view;
 
     private final int CREATE_DOCUMENT_REQUEST = 1000;
 
@@ -114,7 +114,6 @@ public class StartMenu extends Fragment {
         textView.setTextColor(Color.RED);
         //ボタン・テキストエディタなどの配置とIDの登録
         Button buttonSearch = view.findViewById(R.id.button_search);
-        //Button buttonCsv = findViewById(R.id.button_csv);
         Button buttonSort = view.findViewById(R.id.button_sort);
         Toolbar toolbar = view.findViewById(R.id.id_toolbar);
         editText = view.findViewById(R.id.editText_channelId);
@@ -212,15 +211,13 @@ public class StartMenu extends Fragment {
         });
         */
 
+        //並べ替えのフラグメントへ遷移する
         buttonTrans.setOnClickListener(v -> {
-            // Intent を生成
-            // 第一引数はこの処理のContext
-            // 第二引数に遷移先画面のSortActivityを指定
-            Intent newIntent = new Intent(buttonTrans.getContext(), SortActivity.class);
-            // Intent にデータを保存
-            newIntent.putExtra("KEY1", "value");
-            // 新規画面表示実行
-            startActivity(newIntent);
+            manager = getParentFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.frame_layout_activity_layout, new SortActivity());
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
 
 

@@ -22,3 +22,6 @@ https://akira-watson.com/android/action_create_document.html
 
 別画面の表示：
 https://qiita.com/NagaJun/items/dd86ed90247acd38c44e
+
+リサイクルビューの使い方
+https://akira-watson.com/android/recyclerview.html

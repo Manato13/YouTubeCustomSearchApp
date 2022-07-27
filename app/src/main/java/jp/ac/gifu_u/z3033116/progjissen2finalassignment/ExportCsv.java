@@ -1,47 +1,10 @@
 package jp.ac.gifu_u.z3033116.progjissen2finalassignment;
 
-
-import java.io.FileWriter;
-import java.io.BufferedWriter;
-import java.io.PrintWriter;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import android.Manifest;
 
-import android.content.Intent;
-import android.os.Bundle;
-
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Environment;
-
-//import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.provider.DocumentsContract;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-
+//csvファイルを出力する下準備をするクラス
 public class ExportCsv {
 
-String fileName1111 = "data.csv";
-String mainData;
 public int NumOfVideos = Integer.parseInt(StartMenu.Max_Results); //動画の本数（一時的に使う）
 //メソッド部
     //二次元ListArray型だったデータをコンマと改行で区切られたString型の文字列に変換する
@@ -79,13 +42,7 @@ public int NumOfVideos = Integer.parseInt(StartMenu.Max_Results); //動画の本
         return sb.toString();
     }
 
-//public void writeCsvFile(String fileName, String data){
-//    try(FileOutputStream fileOutputStream = openFileOutput(fileName,Context.MODE_APPEND)){
-//        fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
-//    }catch (IOException e){
-//        e.printStackTrace();
-//    }
-//}
+
 
 
 
