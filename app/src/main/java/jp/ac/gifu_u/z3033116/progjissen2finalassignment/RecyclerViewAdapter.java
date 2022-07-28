@@ -6,10 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-    private final String[] localDataSet;
+    private final String[] localDataSet;//リストのデータを保持する変数
 
     /**
      * Provide a reference to the type of views that you are using
@@ -43,14 +44,29 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        // Create a new view, which defines the UI of the list item
+        //onCreateViewHolder()ではリスト一行分のレイアウトViewを生成する
+        //作成したViewはViewHolderに格納してViewHolderをreturnで返す
+        //レイアウトXMLからViewを生成
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.cell_view, viewGroup, false);
 
-        return new ViewHolder(view);
+        RecyclerViewAdapter.ViewHolder holder = new RecyclerViewAdapter.ViewHolder(view);
+
+        //クリックイベントを登録
+        //参考：http://www.fineblue206.net/archives/602
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //cellがクリックされた時の処理を書く
+                int position = holder.getAdapterPosition();
+                Toast.makeText(v.getContext(), localDataSet[position], Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return holder;
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
+    //onBindViewHolder()ではデータとレイアウトの紐づけを行なう
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
 

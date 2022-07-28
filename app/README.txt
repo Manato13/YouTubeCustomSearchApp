@@ -25,3 +25,6 @@ https://qiita.com/NagaJun/items/dd86ed90247acd38c44e
 
 リサイクルビューの使い方
 https://akira-watson.com/android/recyclerview.html
+
+リサイクルビューのクリックイベントの使い方
+http://www.fineblue206.net/archives/602

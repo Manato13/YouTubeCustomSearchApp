@@ -69,11 +69,13 @@ public class StartMenu extends Fragment {
     static private final String API_KEY = "AIzaSyBIF6ehSgidGb4Q9Md64N4dfwp779dQpiI"; //sub
     //チャンネルのURL、カスタムされていないID、名前を格納する
     public String Channel_URL, tmpChannel_URL, Channel_ID, Channel_Name;
-    public static String Max_Results = "50";
+    public static String Max_Results = "5";
     //取得した動画のIDをまとめて格納する
     private String Video_ID;
     //取得した動画の情報を保存する二次元ArrayList配列
     public static ArrayList<ArrayList<String>> youtubeDataArray = new ArrayList<ArrayList<String>>();
+    //取得した動画のサムネイル情報を保存するArrayList配列
+    public static ArrayList<String> thumbnailArray = new ArrayList<String>();
     //取得した動画の合計数
     public int videoSum = 0;
     //csvファイルを出力するクラス
@@ -303,7 +305,7 @@ public class StartMenu extends Fragment {
 
     //Youtube Data API V3(search)を使用して入力されたチャンネルURLから、カスタムされていない「元のチャンネルID」とチャンネル名を取得する。
     private void jsonFindChannelID() {
-        String url = "https://www.googleapis.com/youtube/v3/search?fields=items/snippet/channelId,items/snippet/title,items/snippet/thumbnails/default/url&part=snippet&maxResults=1&type=channel&q=" + Channel_URL + "&key=" + API_KEY;
+        String url = "https://www.googleapis.com/youtube/v3/search?fields=items/snippet/channelId,items/snippet/title&part=snippet&maxResults=1&type=channel&q=" + Channel_URL + "&key=" + API_KEY;
         //参考↓
         //https://www.google.com/search?q=android+studio+AcyncLoader&rlz=1C1FQRR_jaJP977JP977&sxsrf=ALiCzsZYwBa_35HQEyBgshbhEWyVxDMTOw%3A1658145621294&ei=VUvVYs2hEe3s2roPsqGhyAU&ved=0ahUKEwiNoPjlsYL5AhVttlYBHbJQCFkQ4dUDCA4&uact=5&oq=android+studio+AcyncLoader&gs_lcp=Cgdnd3Mtd2l6EAM6BwgAEEcQsAM6CwgAEIAEEAQQJRAgOgQIIxAnOgUIABCABEoECEEYAEoECEYYAFD1BVj-DmDgEGgBcAB4AIABgwGIAYMEkgEDMy4ymAEAoAEBoAECyAEKwAEB&sclient=gws-wiz
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -341,7 +343,7 @@ public class StartMenu extends Fragment {
 
     //Youtube Data API V3(search)を使用して指定のチャンネルからアップロードされている動画のIDをリクエストし、レスポンスとして入手できるJson形式のデータをStringとして抜き出す。
     private void jsonSearch() {
-        String url = "https://www.googleapis.com/youtube/v3/search?fields=items/id/videoId,items/snippet/publishedAt,items/snippet/title&order=viewCount&part=id,snippet&maxResults=" + Max_Results + "&channelId=" + Channel_ID + "&key=" + API_KEY;
+        String url = "https://www.googleapis.com/youtube/v3/search?fields=items/id/videoId,items/snippet/publishedAt,items/snippet/title,items/snippet/thumbnails/default/url&order=viewCount&part=id,snippet&maxResults=" + Max_Results + "&channelId=" + Channel_ID + "&key=" + API_KEY;
         //System.out.println(url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -358,6 +360,8 @@ public class StartMenu extends Fragment {
                         String publishedAt = jsonObjectItems.getJSONObject("snippet").getString("publishedAt");
                         //動画タイトル
                         String title = jsonObjectItems.getJSONObject("snippet").getString("title");
+                        //サムネイルURL
+                        String thumbnail = jsonObjectItems.getJSONObject("snippet").getJSONObject("thumbnails").getJSONObject("default").getString("url");
                         //idの中身
                         String id = jsonObjectItems.getString("id");
                         //その動画の固有ID
@@ -371,6 +375,9 @@ public class StartMenu extends Fragment {
                         tmpArray.add(publishedAt);
                         tmpArray.add(videoId);
                         youtubeDataArray.add(tmpArray);
+
+                        //サムネイルURLは別の配列に保存する
+                        thumbnailArray.add(thumbnail);
                     }
                     //取得した動画の本数をカウント
                     videoSum = youtubeDataArray.size();
@@ -440,7 +447,8 @@ public class StartMenu extends Fragment {
                         youtubeDataArray.get(i).add("" + (100*loop+i));
                         //tmpArray.clear();
                     }
-                    Log.i("test","jsonVideo完了時点で取得したデータ" + youtubeDataArray + "\n" );
+                    Log.i("test","jsonVideo完了時点で取得したデータ " + youtubeDataArray + "\n" );
+                    Log.i("test","jsonVideo完了時点で取得したサムネイル"  + thumbnailArray + "\n" );
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
