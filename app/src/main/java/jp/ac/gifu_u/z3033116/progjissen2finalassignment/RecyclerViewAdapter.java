@@ -5,39 +5,65 @@ import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
+
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-    private final String[] localDataSet;//リストのデータを保持する変数
+    //リストのデータを保持する変数
+
+    private final ArrayList<String> iTitle;// = new ArrayList<String>();
+    private final ArrayList<String> iViewC;// = new ArrayList<String>();
+    private final ArrayList<String> iLikeC;// = new ArrayList<String>();
+    private final ArrayList<String> iCommentC;// = new ArrayList<String>();
 
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder).
      */
     static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textView;
+
+        //ImageView imageView;
+        TextView titleView;
+        TextView viewCView;
+        TextView likeCView;
+        TextView commentCView;
 
         public ViewHolder(View view) {
             super(view);
-            textView = view.findViewById(R.id.text_view);
+
+            titleView = view.findViewById(R.id.title_view);
+            viewCView = view.findViewById(R.id.viewC_view);
+            likeCView = view.findViewById(R.id.likeC_view);
+            commentCView = view.findViewById(R.id.commentC_view);
+
+            //imageView = view.findViewById(R.id.image_view);
+
         }
 
         public TextView getTextView(){
-            return textView;
+            return titleView;
         }
 
     }
 
-    /**
-     * Initialize the dataset of the Adapter.
-     *
-     * @param dataSet String[] containing the data to populate views to be used
-     * by RecyclerView.
-     */
-    public RecyclerViewAdapter(String[] dataSet) {
-        localDataSet = dataSet;
+
+//    public RecyclerViewAdapter(ArrayList<Integer> itemImages, ArrayList<String> itemNames, ArrayList<String> itemEmails) {
+//        this.iImages = itemImages;
+//        this.iNames = itemNames;
+//        this.iEmails = itemEmails;
+//    }
+
+    public RecyclerViewAdapter(ArrayList<String> itemTitle,ArrayList<String> itemViewCount,ArrayList<String> itemLikeCount,ArrayList<String> itemCommentCount ) {
+
+        this.iTitle = itemTitle;
+        this.iViewC = itemViewCount;
+        this.iLikeC = itemLikeCount;
+        this.iCommentC = itemCommentCount;
     }
 
     // Create new views (invoked by the layout manager)
@@ -59,7 +85,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             public void onClick(View v) {
                 //cellがクリックされた時の処理を書く
                 int position = holder.getAdapterPosition();
-                Toast.makeText(v.getContext(), localDataSet[position], Toast.LENGTH_SHORT).show();
+                //Toast.makeText(v.getContext(), localDataSet[position], Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -72,12 +98,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.getTextView().setText(localDataSet[position]);
+        //viewHolder.imageView.setImageResource(iImages.get(position));
+        viewHolder.titleView.setText(iTitle.get(position));
+        viewHolder.viewCView.setText(iViewC.get(position));
+        viewHolder.likeCView.setText(iLikeC.get(position));
+        viewHolder.commentCView.setText(iCommentC.get(position));
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return localDataSet.length;
+        return iTitle.size();
     }
 }

@@ -14,6 +14,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import java.util.ArrayList;
 import java.util.Locale;
 
 
@@ -39,8 +41,8 @@ public class SortActivity extends Fragment {
     private final String[] spinnerSortType = {"投稿日時", "再生回数", "高評価数", "コメント数", "隠れた名作", "ユーザーカスタム"};
     private final String[] spinnerSortAscendDescend = {"昇順", "降順"};
 
-    //テスト用
-    private final String[] dataset = new String[20];
+    //リサイクルビューに表示するデータ //https://akira-watson.com/android/recyclerview.html
+
 
     //フラグメントはコンストラクタ部を空っぽにする必要がある
     public SortActivity(){}
@@ -87,14 +89,6 @@ public class SortActivity extends Fragment {
         // use a linear layout manager
         RecyclerView.LayoutManager rLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(rLayoutManager);
-        int i = 0;
-        while (i < 20) {
-            dataset[i] = String.format(Locale.ENGLISH, "Data_0%d", i);
-            i++;
-        }
-
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(dataset);
-        recyclerView.setAdapter(adapter);
 
 
         //ソートの種類を選択するプルタブ
@@ -164,9 +158,28 @@ public class SortActivity extends Fragment {
         buttonSortVideos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //もしデータ配列が空っぽでなかったら
                 if(StartMenu.youtubeDataArray.size() != 0){
-                    //動画の並べ替えを実行する
-                    sortYoutubeVideos();
+                    //リサイクルビューに渡す動画のタイトル
+                    ArrayList<String> title = new ArrayList<String>();
+                    //リサイクルビューに渡す動画の再生回数
+                    ArrayList<String> viewCount = new ArrayList<String>();
+                    //リサイクルビューに渡す動画の高評価数
+                    ArrayList<String> likeCount = new ArrayList<String>();
+                    //リサイクルビューに渡す動画のコメント数
+                    ArrayList<String> commentCount = new ArrayList<String>();
+                    //リサイクルビューにセットしたいデータが入っている配列を作成
+                    for(int i = 0; i<StartMenu.youtubeDataArray.size(); i++){
+                        //動画の並べ替えを実行し、その結果をアダプターに渡す
+                        title.add(sortYoutubeVideos().get(i).get(0));
+                        viewCount.add(sortYoutubeVideos().get(i).get(1));
+                        likeCount.add(sortYoutubeVideos().get(i).get(2));
+                        commentCount.add(sortYoutubeVideos().get(i).get(3));
+                    }
+                    //アダプターを使って要素を配置する
+                    RecyclerViewAdapter adapter = new RecyclerViewAdapter(title,viewCount,likeCount,commentCount);
+                    recyclerView.setAdapter(adapter);
+
                 }
                 else{
                     showToast("並べ替えるデータが存在しません");
@@ -178,12 +191,15 @@ public class SortActivity extends Fragment {
     }
 
     //メソッド部
-    public void sortYoutubeVideos(){
+    public ArrayList<ArrayList<String>> sortYoutubeVideos(){
+        //並べ替え終わったデータを受け取る二次元配列
+        //ArrayList<ArrayList<String>> sortedData = new ArrayList<ArrayList<String>>();
         //SortVideosクラスを呼び出して並べ替えを実行する。
         sortVideos = new SortVideos();
         //selectMode一覧：1.投稿日時、3.再生回数、4.高評価数、5.コメント数、7.隠れた名作
         //sortがtrueならば昇順、falseなら降順
-        sortVideos.sortMethod(AsDes,sortVideos.preForSort(SelectSortMode,StartMenu.youtubeDataArray),StartMenu.youtubeDataArray);
+        //sortedData.addAll(sortVideos.sortMethod(AsDes,sortVideos.preForSort(SelectSortMode,StartMenu.youtubeDataArray),StartMenu.youtubeDataArray));
+        return sortVideos.sortMethod(AsDes,sortVideos.preForSort(SelectSortMode,StartMenu.youtubeDataArray),StartMenu.youtubeDataArray);
     }
 
     //トーストはこの関数を使って表示する

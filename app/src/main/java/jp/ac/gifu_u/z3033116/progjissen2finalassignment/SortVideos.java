@@ -69,7 +69,12 @@ public class SortVideos {
 
 
     //並べ替えを行う関数の本体
-    public void sortMethod(boolean sort, Map<String, Double> dataMap, ArrayList<ArrayList<String>> YTarray) {
+    //並べ替え終わった二次元配列を返す
+    public ArrayList<ArrayList<String>> sortMethod(boolean sort, Map<String, Double> dataMap, ArrayList<ArrayList<String>> YTarray) {
+        //returnで返す並び終えたデータを保管する配列
+        ArrayList<ArrayList<String>> data4return = new ArrayList<ArrayList<String>>();
+        //インデックスカウント用変数
+        int p = 0;
         // 2.Map.Entryのリストを作成する(MapのEntry(キーと値のペア）のリストを作成)
         List<Entry<String, Double>> list_entries = new ArrayList<Entry<String, Double>>(dataMap.entrySet());
 
@@ -90,6 +95,8 @@ public class SortVideos {
                 System.out.println(YTarray.get(Integer.parseInt(entry.getKey())).get(0) + "\n");
                 //ここでソートに使用した値を出力
                 System.out.println(entry.getValue() + "\n");
+                //ソートの結果を保存する
+                data4return.add(saveSortData(entry,YTarray));
                 //System.out.println(entry.getKey() + " : " + entry.getValue());
             }
 
@@ -111,10 +118,26 @@ public class SortVideos {
                 System.out.println(YTarray.get(Integer.parseInt(entry.getKey())).get(0) + "\n");
                 //ここでソートに使用した値を出力
                 System.out.println(entry.getValue() + "\n");
+                //ソートの結果を保存する
+                data4return.add(saveSortData(entry,YTarray));
                 //System.out.println(entry.getKey() + " : " + entry.getValue());
             }
         }
+        return data4return;
+    }
 
+    private ArrayList<String> saveSortData(Entry<String, Double> entry,ArrayList<ArrayList<String>> YTarray){
+        //ソートしたデータを保存する
+        ArrayList<String> tmpDataArray = new ArrayList<>();
+        //タイトル
+        tmpDataArray.add(YTarray.get(Integer.parseInt(entry.getKey())).get(0));
+        //再生回数
+        tmpDataArray.add(YTarray.get(Integer.parseInt(entry.getKey())).get(3));
+        //高評価数
+        tmpDataArray.add(YTarray.get(Integer.parseInt(entry.getKey())).get(4));
+        //コメント数
+        tmpDataArray.add(YTarray.get(Integer.parseInt(entry.getKey())).get(5));
+        return tmpDataArray;
     }
 }
 

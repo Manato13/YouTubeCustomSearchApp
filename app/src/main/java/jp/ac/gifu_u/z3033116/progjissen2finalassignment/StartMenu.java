@@ -69,7 +69,7 @@ public class StartMenu extends Fragment {
     static private final String API_KEY = "AIzaSyBIF6ehSgidGb4Q9Md64N4dfwp779dQpiI"; //sub
     //チャンネルのURL、カスタムされていないID、名前を格納する
     public String Channel_URL, tmpChannel_URL, Channel_ID, Channel_Name;
-    public static String Max_Results = "5";
+    public static String Max_Results = "8";
     //取得した動画のIDをまとめて格納する
     private String Video_ID;
     //取得した動画の情報を保存する二次元ArrayList配列
@@ -124,7 +124,7 @@ public class StartMenu extends Fragment {
 
 
 
-
+        /*
         //ソートの種類を選択するプルダウンタブ
         // ArrayAdapter(選択肢を良い具合に並べて設定。)
         ArrayAdapter<String> adapterType = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item);
@@ -146,6 +146,8 @@ public class StartMenu extends Fragment {
         }
         Spinner spinnerSortAsDes = view.findViewById(R.id.spinnerSortAsDes);
         spinnerSortAsDes.setAdapter(adapterAsDes);
+
+         */
 
 
 
@@ -222,6 +224,31 @@ public class StartMenu extends Fragment {
             transaction.commit();
         });
 
+        if(savedInstanceState == null){
+            // lambda
+            //動画を並べ替える画面遷移を行う
+            buttonSort.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //配列が空っぽでなかったら
+                    if(youtubeDataArray.size() != 0){
+                        //フラグメントを遷移させる
+                        FragmentManager manager = getParentFragmentManager();
+                        FragmentTransaction transaction = manager.beginTransaction();
+                        transaction.replace(R.id.frame_layout_activity_layout, new SortFragment());
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+
+                    }
+                    //配列に何もデータが無かったら
+                    else{
+                        showToast("URLを入力しsearchを行った後、再度実行してください。");
+                    }
+                }
+            });
+
+        }
+
 
 
         //APIを使用を開始するボタン
@@ -250,31 +277,7 @@ public class StartMenu extends Fragment {
 
 
 
-        if(savedInstanceState == null){
-            // lambda
-            //動画を並べ替える画面遷移を行う
-            buttonSort.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //配列が空っぽでなかったら
-                    if(youtubeDataArray.size() != 0){
-                        //フラグメントを遷移させる
-                    FragmentManager manager = getParentFragmentManager();
-                    FragmentTransaction transaction = manager.beginTransaction();
-                    transaction.replace(R.id.frame_layout_activity_layout, new SortFragment());
-                    transaction.addToBackStack(null);
-                    transaction.commit();
 
-
-                    }
-                    //配列に何もデータが無かったら
-                    else{
-                        showToast("URLを入力しsearchを行った後、再度実行してください。");
-                    }
-                }
-            });
-
-        }
     return view;
     }
 /*
