@@ -137,6 +137,8 @@ public class SortVideos {
         tmpDataArray.add(YTarray.get(Integer.parseInt(entry.getKey())).get(4));
         //コメント数
         tmpDataArray.add(YTarray.get(Integer.parseInt(entry.getKey())).get(5));
+        //動画のID
+        tmpDataArray.add(YTarray.get(Integer.parseInt(entry.getKey())).get(2));
         return tmpDataArray;
     }
 }

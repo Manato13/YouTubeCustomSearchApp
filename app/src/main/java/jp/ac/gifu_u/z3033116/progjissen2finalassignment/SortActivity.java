@@ -1,4 +1,6 @@
 package jp.ac.gifu_u.z3033116.progjissen2finalassignment;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import java.util.ArrayList;
 import java.util.Locale;
 
-
+//遷移先の並べ替え画面での処理を管理するクラス
 public class SortActivity extends Fragment {
 
     FragmentManager manager;
@@ -168,6 +170,8 @@ public class SortActivity extends Fragment {
                     ArrayList<String> likeCount = new ArrayList<String>();
                     //リサイクルビューに渡す動画のコメント数
                     ArrayList<String> commentCount = new ArrayList<String>();
+                    //リサイクルビューに渡す動画のID
+                    ArrayList<String> videoID = new ArrayList<String>();
                     //リサイクルビューにセットしたいデータが入っている配列を作成
                     for(int i = 0; i<StartMenu.youtubeDataArray.size(); i++){
                         //動画の並べ替えを実行し、その結果をアダプターに渡す
@@ -175,9 +179,10 @@ public class SortActivity extends Fragment {
                         viewCount.add(sortYoutubeVideos().get(i).get(1));
                         likeCount.add(sortYoutubeVideos().get(i).get(2));
                         commentCount.add(sortYoutubeVideos().get(i).get(3));
+                        videoID.add(sortYoutubeVideos().get(i).get(4));
                     }
                     //アダプターを使って要素を配置する
-                    RecyclerViewAdapter adapter = new RecyclerViewAdapter(title,viewCount,likeCount,commentCount);
+                    RecyclerViewAdapter adapter = new RecyclerViewAdapter(title,viewCount,likeCount,commentCount,videoID,getContext());
                     recyclerView.setAdapter(adapter);
 
                 }
@@ -191,9 +196,8 @@ public class SortActivity extends Fragment {
     }
 
     //メソッド部
+    //並べ替えを行いその結果を格納した二次元配列を返す関数
     public ArrayList<ArrayList<String>> sortYoutubeVideos(){
-        //並べ替え終わったデータを受け取る二次元配列
-        //ArrayList<ArrayList<String>> sortedData = new ArrayList<ArrayList<String>>();
         //SortVideosクラスを呼び出して並べ替えを実行する。
         sortVideos = new SortVideos();
         //selectMode一覧：1.投稿日時、3.再生回数、4.高評価数、5.コメント数、7.隠れた名作
@@ -201,6 +205,8 @@ public class SortActivity extends Fragment {
         //sortedData.addAll(sortVideos.sortMethod(AsDes,sortVideos.preForSort(SelectSortMode,StartMenu.youtubeDataArray),StartMenu.youtubeDataArray));
         return sortVideos.sortMethod(AsDes,sortVideos.preForSort(SelectSortMode,StartMenu.youtubeDataArray),StartMenu.youtubeDataArray);
     }
+
+
 
     //トーストはこの関数を使って表示する
     private void showToast(String message){

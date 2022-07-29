@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     public static Context contextOfApplication;
 
 
+
     //コンストラクタ部(=onCreate)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +80,10 @@ public class MainActivity extends AppCompatActivity {
     {
         return contextOfApplication;
     }
+
+
 }
+
 
 
 

@@ -2,6 +2,10 @@ package jp.ac.gifu_u.z3033116.progjissen2finalassignment;
 
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.annotation.NonNull;
+
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,22 +15,23 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-
+//リサイクルビューでの処理を管理するクラス
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     //リストのデータを保持する変数
-
     private final ArrayList<String> iTitle;// = new ArrayList<String>();
     private final ArrayList<String> iViewC;// = new ArrayList<String>();
     private final ArrayList<String> iLikeC;// = new ArrayList<String>();
     private final ArrayList<String> iCommentC;// = new ArrayList<String>();
+    private final ArrayList<String> iVideoID;// = new ArrayList<String>();
+    Context context;
+
 
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder).
      */
     static class ViewHolder extends RecyclerView.ViewHolder {
-
         //ImageView imageView;
         TextView titleView;
         TextView viewCView;
@@ -42,15 +47,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             commentCView = view.findViewById(R.id.commentC_view);
 
             //imageView = view.findViewById(R.id.image_view);
-
         }
 
-        public TextView getTextView(){
+        public TextView getTextView() {
             return titleView;
         }
-
     }
-
 
 //    public RecyclerViewAdapter(ArrayList<Integer> itemImages, ArrayList<String> itemNames, ArrayList<String> itemEmails) {
 //        this.iImages = itemImages;
@@ -58,12 +60,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 //        this.iEmails = itemEmails;
 //    }
 
-    public RecyclerViewAdapter(ArrayList<String> itemTitle,ArrayList<String> itemViewCount,ArrayList<String> itemLikeCount,ArrayList<String> itemCommentCount ) {
-
+    public RecyclerViewAdapter(ArrayList<String> itemTitle, ArrayList<String> itemViewCount, ArrayList<String> itemLikeCount, ArrayList<String> itemCommentCount, ArrayList<String> itemVideoID,Context context) {
         this.iTitle = itemTitle;
         this.iViewC = itemViewCount;
         this.iLikeC = itemLikeCount;
         this.iCommentC = itemCommentCount;
+        this.iVideoID = itemVideoID;
+        this.context = context;
     }
 
     // Create new views (invoked by the layout manager)
@@ -85,7 +88,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             public void onClick(View v) {
                 //cellがクリックされた時の処理を書く
                 int position = holder.getAdapterPosition();
-                //Toast.makeText(v.getContext(), localDataSet[position], Toast.LENGTH_SHORT).show();
+                goToYoutube(iVideoID.get(position));
             }
         });
 
@@ -103,6 +106,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         viewHolder.viewCView.setText(iViewC.get(position));
         viewHolder.likeCView.setText(iLikeC.get(position));
         viewHolder.commentCView.setText(iCommentC.get(position));
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -110,4 +114,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public int getItemCount() {
         return iTitle.size();
     }
+
+    //cellをタップしたらURL先の動画に飛ぶ関数
+    public void goToYoutube(String id) {
+        Uri uri = Uri.parse("https://youtu.be/"+id);
+        Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+        context.startActivity(intent);
+    }
+
 }
+
+
+
+
+
+
