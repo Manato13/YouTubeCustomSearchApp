@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -95,6 +96,8 @@ public class StartMenu extends Fragment {
     FragmentManager manager;
     SharedVIewModel sharedViewModel;
     private View view;
+    //ロード画面の表示
+    ProgressDialog progressDialog;
 
     private final int CREATE_DOCUMENT_REQUEST = 1000;
 
@@ -258,6 +261,13 @@ public class StartMenu extends Fragment {
                 // 入力したURLを使ってAPIを使用しカスタムされていないチャンネルIDを取得
                 Channel_URL = editText.getText().toString();
                 if(Channel_URL != "" && Channel_URL != tmpChannel_URL){
+                    //処理が終わるまでロード画面を表示する
+                    progressDialog = new ProgressDialog(getContext());
+                    progressDialog.setTitle("Search");
+                    progressDialog.setMessage("チャンネルの動画情報を検索しています...");
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progressDialog.show();
+
                     tmpChannel_URL = Channel_URL;
                     jsonFindChannelID();
                 }
@@ -331,8 +341,10 @@ public class StartMenu extends Fragment {
                     //数珠つなぎで次のAPI(Search)を使用する関数を指定する。
                     jsonSearch();
                 } catch (JSONException e) {
-                    showToast("有効なチャンネルURLを入力してください。");
                     e.printStackTrace();
+                    //ロード画面の終了
+                    progressDialog.dismiss();
+                    showToast("動画情報の取得に失敗しました");
                 }
             }
         }, new Response.ErrorListener() {
@@ -388,6 +400,9 @@ public class StartMenu extends Fragment {
                     makeVideoId();
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    //ロード画面の終了
+                    progressDialog.dismiss();
+                    showToast("動画情報を取得に失敗しました");
                 }
             }
         }, new Response.ErrorListener() {
@@ -452,9 +467,13 @@ public class StartMenu extends Fragment {
                     }
                     Log.i("test","jsonVideo完了時点で取得したデータ " + youtubeDataArray + "\n" );
                     Log.i("test","jsonVideo完了時点で取得したサムネイル"  + thumbnailArray + "\n" );
+                    showToast("動画情報を取得しました！");
                 } catch (JSONException e) {
+                    showToast("動画情報を取得に失敗しました");
                     e.printStackTrace();
                 }
+                //ロード画面の終了
+                progressDialog.dismiss();
             }
         }, new Response.ErrorListener() {
             @Override

@@ -10,10 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+
+import jp.ac.gifu_u.z3033116.progjissen2finalassignment.databinding.ActivityMainBinding;
 
 //リサイクルビューでの処理を管理するクラス
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
@@ -25,6 +28,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private final ArrayList<String> iCommentC;// = new ArrayList<String>();
     private final ArrayList<String> iVideoID;// = new ArrayList<String>();
     Context context;
+    //URL先の画像をimageviewにはめ込むのに使う
+    ActivityMainBinding binding;
 
 
     /**
@@ -80,6 +85,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 .inflate(R.layout.cell_view, viewGroup, false);
 
         RecyclerViewAdapter.ViewHolder holder = new RecyclerViewAdapter.ViewHolder(view);
+
+//        LinearLayout my_recycler_view = R.findViewById(R.id.my_recycler_view);
+//        binding = ActivityMainBinding.inflate(view.layout.cell_view, my_recycler_view);
 
         //クリックイベントを登録
         //参考：http://www.fineblue206.net/archives/602
