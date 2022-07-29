@@ -22,75 +22,57 @@
         android:textSize="20sp"
         />
 
+    <ImageView
+        android:id="@+id/iv_startMenu"
+        android:src="@drawable/start_menu"
+        android:scaleType="centerCrop"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="0dp"
+        />
+
     <EditText
         android:id="@+id/editText_channelId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/id_toolbar"
+        android:layout_below="@+id/iv_startMenu"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:hint="チャンネルのURLを入力" />
 
     <Button
-        android:id="@+id/button_sort"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/editText_channelId"
+        android:id="@+id/button_search"
+        android:layout_width="160dp"
+        android:layout_height="60dp"
         android:layout_centerHorizontal="true"
+        android:layout_below="@id/editText_channelId"
         android:layout_marginTop="30dp"
-        android:text="sort" />
+
+        android:text="search" />
+
+    <Button
+        android:id="@+id/button_sort"
+        android:layout_width="160dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="90dp"
+        android:text="SORT VIDEOS" />
 
 
     <Button
         android:id="@+id/button_csv"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/button_sort"
+        android:layout_height="60dp"
+        android:layout_above="@+id/button_sort"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="csv" />
+        android:layout_marginBottom="20dp"
+        android:text="EXPORT CSV FILE" />
 
 
-    <Spinner
-        android:id="@+id/spinnerSortType"
-        android:layout_width="150dp"
-        android:layout_height="30dp"
-        android:background="#aaa"
-        android:layout_below="@+id/button_csv"
-        android:layout_centerHorizontal="true"
-        android:spinnerMode="dialog"
-        android:layout_marginTop="40dp"
-        app:layout_constraintVertical_bias="0.3" />
-
-    <Spinner
-        android:id="@+id/spinnerSortAsDes"
-        android:layout_width="150dp"
-        android:layout_height="30dp"
-        android:background="#bbb"
-        android:layout_below="@+id/spinnerSortType"
-        android:layout_centerHorizontal="true"
-        android:spinnerMode="dialog"
-        android:layout_marginTop="40dp"
-        app:layout_constraintVertical_bias="0.3" />
-
-    <Button
-        android:id="@+id/button_trans"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/spinnerSortAsDes"
-        android:layout_marginBottom="30dp"
-        android:text="transTest" />
 
 
-    <Button
-        android:id="@+id/button_search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:text="search" />
 
 
 </RelativeLayout>

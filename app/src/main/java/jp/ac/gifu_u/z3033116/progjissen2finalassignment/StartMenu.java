@@ -1,11 +1,9 @@
 package jp.ac.gifu_u.z3033116.progjissen2finalassignment;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -13,11 +11,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -31,11 +25,9 @@ import android.widget.EditText;
 
 import android.graphics.Color;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+
 import android.view.View;
-import android.widget.Button;
+
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -51,8 +43,7 @@ import org.json.JSONObject;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Activity;
@@ -69,7 +60,7 @@ public class StartMenu extends Fragment {
     //static private final String API_KEY = "AIzaSyAP-mnDKDFJLJ8hxPkJzIQN5hvTgctBne8";
     static private final String API_KEY = "AIzaSyBIF6ehSgidGb4Q9Md64N4dfwp779dQpiI"; //sub
     //チャンネルのURL、カスタムされていないID、名前を格納する
-    public String Channel_URL, tmpChannel_URL, Channel_ID, Channel_Name;
+    public String Channel_URL, Channel_ID, Channel_Name;
     public static String Max_Results = "8";
     //取得した動画のIDをまとめて格納する
     private String Video_ID;
@@ -123,103 +114,13 @@ public class StartMenu extends Fragment {
         Toolbar toolbar = view.findViewById(R.id.id_toolbar);
         editText = view.findViewById(R.id.editText_channelId);
         Button csvOutputBtn = (Button) view.findViewById(R.id.button_csv);
-        Button buttonTrans = view.findViewById(R.id.button_trans);
-
-
-
-        /*
-        //ソートの種類を選択するプルダウンタブ
-        // ArrayAdapter(選択肢を良い具合に並べて設定。)
-        ArrayAdapter<String> adapterType = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item);
-        adapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //プルダウンメニューに要素を追加する
-        for(String sortType: spinnerSortType){
-            adapterType.add(sortType);
-        }
-        Spinner spinnerSortType = view.findViewById(R.id.spinnerSortType);
-        spinnerSortType.setAdapter(adapterType);
-
-        //ソートの昇順・降順を選択するプルダウンタブ
-        // ArrayAdapter(選択肢を良い具合に並べて設定。)
-        ArrayAdapter<String> adapterAsDes = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item);
-        adapterAsDes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //プルダウンメニューに要素を追加する
-        for(String sortAsDes: spinnerSortAscendDescend){
-            adapterAsDes.add(sortAsDes);
-        }
-        Spinner spinnerSortAsDes = view.findViewById(R.id.spinnerSortAsDes);
-        spinnerSortAsDes.setAdapter(adapterAsDes);
-
-         */
-
 
 
         requestQueue = Volley.newRequestQueue(requireContext());
 
-/*
-        //ソートの種類を選択するプルタブ
-        spinnerSortType.setOnItemSelectedListener(new OnItemSelectedListener() {
-            //アイテムが選択された時
-            @Override
-            public void onItemSelected(AdapterView<?> parent,
-                                       View view, int position, long id) {
-                Spinner spinner = (Spinner)parent;
-                String item = (String)spinner.getSelectedItem();
-                //選ばれたソートの種類をSelectSortModeに渡す
-                switch(item){
-                    case "投稿日時":
-                        SelectSortMode = 1;
-                        break;
-                    case "再生回数":
-                        SelectSortMode = 3;
-                        break;
-                    case "高評価数":
-                        SelectSortMode = 4;
-                        break;
-                    case "コメント数":
-                        SelectSortMode = 5;
-                        break;
-                    case "隠れた名作":
-                        SelectSortMode = 7;
-                        break;
-                    case "ユーザーカスタム":
-                        SelectSortMode = 9;
-                }
-                //textView.setText(item);
-            }
-            //　アイテムが選択されなかった
-            public void onNothingSelected(AdapterView<?> parent) {
-                //特に処理なし
-            }
-        });
 
-
-        //ソートの昇順・降順を選択するプルタブ
-        spinnerSortAsDes.setOnItemSelectedListener(new OnItemSelectedListener() {
-            //アイテムが選択された時
-            @Override
-            public void onItemSelected(AdapterView<?> parent,
-                                       View view, int position, long id) {
-                Spinner spinner = (Spinner)parent;
-                String item = (String)spinner.getSelectedItem();
-                //選ばれたソートの種類をSelectSortModeに渡す
-                switch(item){
-                    case "昇順":
-                        AsDes = true;
-                        break;
-                    case "降順":
-                        AsDes = false;
-                }
-            }
-            //　アイテムが選択されなかった
-            public void onNothingSelected(AdapterView<?> parent) {
-                //特に処理なし
-            }
-        });
-        */
-
-        //並べ替えのフラグメントへ遷移する
-        buttonTrans.setOnClickListener(v -> {
+        //動画並べ替えのフラグメントへ遷移するボタン
+        buttonSort.setOnClickListener(v -> {
             manager = getParentFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
             transaction.replace(R.id.frame_layout_activity_layout, new SortActivity());
@@ -227,94 +128,45 @@ public class StartMenu extends Fragment {
             transaction.commit();
         });
 
-        if(savedInstanceState == null){
-            // lambda
-            //動画を並べ替える画面遷移を行う
-            buttonSort.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //配列が空っぽでなかったら
-                    if(youtubeDataArray.size() != 0){
-                        //フラグメントを遷移させる
-                        FragmentManager manager = getParentFragmentManager();
-                        FragmentTransaction transaction = manager.beginTransaction();
-                        transaction.replace(R.id.frame_layout_activity_layout, new SortFragment());
-                        transaction.addToBackStack(null);
-                        transaction.commit();
-
-                    }
-                    //配列に何もデータが無かったら
-                    else{
-                        showToast("URLを入力しsearchを行った後、再度実行してください。");
-                    }
-                }
-            });
-
-        }
-
-
 
         //APIを使用を開始するボタン
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 入力したURLを使ってAPIを使用しカスタムされていないチャンネルIDを取得
-                Channel_URL = editText.getText().toString();
-                if(Channel_URL != "" && Channel_URL != tmpChannel_URL){
-                    //処理が終わるまでロード画面を表示する
-                    progressDialog = new ProgressDialog(getContext());
-                    progressDialog.setTitle("Search");
-                    progressDialog.setMessage("チャンネルの動画情報を検索しています...");
-                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    progressDialog.show();
-
-                    tmpChannel_URL = Channel_URL;
-                    jsonFindChannelID();
+                    // 入力したURLを使ってAPIを使用しカスタムされていないチャンネルIDを取得
+                    Channel_URL = editText.getText().toString();
+                if(Channel_URL.length()>5){
+                        //処理が終わるまでロード画面を表示する
+                        progressDialog = new ProgressDialog(getContext());
+                        progressDialog.setTitle("Search");
+                        progressDialog.setMessage("チャンネルの動画情報を検索しています...");
+                        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                        progressDialog.show();
+                        //APIを実行する
+                        jsonFindChannelID();
                 }
                 else{
-                    if(Channel_URL == ""){
                         showToast("チャンネルのURLを入力してください。");
-                    }
-                    else if(Channel_URL == tmpChannel_URL){
-                        showToast("既にこのチャンネルの検索結果を取得しています。");
-                    }
                 }
             }
         });
 
         //csvファイルを作成し、Storage Access Frameworkを起動するボタン
-        csvOutputBtn.setOnClickListener( v ->createFile());
-
-
-
+        csvOutputBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(youtubeDataArray.size() != 0){
+                    createFile();
+                }
+                else{
+                    showToast("出力するデータがありません");
+                }
+            }
+        });
 
     return view;
     }
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        //inflater.inflate(R.menu.menu, menu);
 
-
-
-        MenuItem.OnActionExpandListener onActionExpandListener = new MenuItem.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem menuItem) {
-                return true;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
-                return true;
-            }
-
-        };
-
-        return true;
-    }
-
- */
 
     //Youtube Data API V3(search)を使用して入力されたチャンネルURLから、カスタムされていない「元のチャンネルID」とチャンネル名を取得する。
     private void jsonFindChannelID() {
@@ -484,25 +336,6 @@ public class StartMenu extends Fragment {
         requestQueue.add(request);
     }
 
-    /*
-    //共有画面を開くメソッド
-    private void shareCsv(){
-        //csvファイルを送信するインテント
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        //MIMEデータタイプの指定
-        shareIntent.setType("text/csv");
-        //メールでも送信できるようにする
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT,"Subject Here");
-        //shareIntent.putExtra(Intent.EXTRA_TEXT,csvToShare);
-        //shareIntent.putExtra(Intent.EXTRA_STREAM,csvUri);
-        //共有するファイルのディレクトリ指定
-        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(csvUri)) ;
-        shareIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        startActivity(Intent.createChooser(shareIntent, "share file with"));
-    }
-     */
-
-
 
     //トーストはこの関数を使って表示する
     private void showToast(String message){
@@ -548,6 +381,24 @@ public class StartMenu extends Fragment {
                     }
                 }
             });
+
+    /*
+    //共有画面を開くメソッド
+    private void shareCsv(){
+        //csvファイルを送信するインテント
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        //MIMEデータタイプの指定
+        shareIntent.setType("text/csv");
+        //メールでも送信できるようにする
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT,"Subject Here");
+        //shareIntent.putExtra(Intent.EXTRA_TEXT,csvToShare);
+        //shareIntent.putExtra(Intent.EXTRA_STREAM,csvUri);
+        //共有するファイルのディレクトリ指定
+        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(csvUri)) ;
+        shareIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivity(Intent.createChooser(shareIntent, "share file with"));
+    }
+     */
 
 
 
