@@ -27,7 +27,7 @@
         android:src="@drawable/start_menu"
         android:scaleType="centerCrop"
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_height="250dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="0dp"
         />
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/iv_startMenu"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:hint="チャンネルのURLを入力" />
 
     <Button
@@ -56,18 +56,18 @@
         android:layout_width="160dp"
         android:layout_height="60dp"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="90dp"
+        android:layout_below="@id/button_search"
+        android:layout_marginTop="25dp"
         android:text="SORT VIDEOS" />
 
 
     <Button
         android:id="@+id/button_csv"
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_above="@+id/button_sort"
+        android:layout_height="65dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
+        android:layout_below="@id/button_sort"
+        android:layout_marginTop="25dp"
         android:text="EXPORT CSV FILE" />
 
 

@@ -27,6 +27,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private final ArrayList<String> iLikeC;// = new ArrayList<String>();
     private final ArrayList<String> iCommentC;// = new ArrayList<String>();
     private final ArrayList<String> iVideoID;// = new ArrayList<String>();
+    //private final ArrayList<String> iImages;
     Context context;
     //URL先の画像をimageviewにはめ込むのに使う
     ActivityMainBinding binding;
@@ -37,21 +38,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
      * (custom ViewHolder).
      */
     static class ViewHolder extends RecyclerView.ViewHolder {
-        //ImageView imageView;
         TextView titleView;
         TextView viewCView;
         TextView likeCView;
         TextView commentCView;
+        ImageView imageView;
 
         public ViewHolder(View view) {
             super(view);
 
             titleView = view.findViewById(R.id.title_view);
             viewCView = view.findViewById(R.id.viewC_view);
-            likeCView = view.findViewById(R.id.likeC_view);
-            commentCView = view.findViewById(R.id.commentC_view);
-
-            //imageView = view.findViewById(R.id.image_view);
+            //likeCView = view.findViewById(R.id.likeC_view);
+            //commentCView = view.findViewById(R.id.commentC_view);
+            imageView = view.findViewById(R.id.image_view);
         }
 
         public TextView getTextView() {
@@ -111,9 +111,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         // contents of the view with that element
         //viewHolder.imageView.setImageResource(iImages.get(position));
         viewHolder.titleView.setText(iTitle.get(position));
-        viewHolder.viewCView.setText(iViewC.get(position));
-        viewHolder.likeCView.setText(iLikeC.get(position));
-        viewHolder.commentCView.setText(iCommentC.get(position));
+        viewHolder.viewCView.setText("再生回数："+iViewC.get(position)+",  高評価数："+iLikeC.get(position)+",  コメント数："+iCommentC.get(position));
+        //viewHolder.likeCView.setText("高評価数："+iLikeC.get(position)+",");
+        //viewHolder.commentCView.setText("コメント数："+iCommentC.get(position));
 
     }
 

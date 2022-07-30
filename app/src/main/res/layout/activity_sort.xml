@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/spinnerSortAsDes"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorPrimary"
         android:textSize="25sp"
         android:text="検索フェーズ"
         android:layout_marginBottom="20dp"
@@ -30,6 +30,7 @@
         android:layout_below="@+id/id_toolbarSort"
         android:layout_centerHorizontal="true"
         android:spinnerMode="dialog"
+        android:textColor="?attr/colorPrimary"
         android:layout_marginTop="30dp"
         />
 
@@ -41,6 +42,7 @@
         android:layout_below="@+id/id_toolbarSort"
         android:layout_toLeftOf="@+id/spinnerSortType"
         android:spinnerMode="dialog"
+        android:textColor="?attr/colorPrimary"
         android:layout_marginRight="20dp"
         android:layout_marginTop="30dp"
          />
@@ -60,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/spinnerSortType"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:scrollbars="vertical"
         />
 

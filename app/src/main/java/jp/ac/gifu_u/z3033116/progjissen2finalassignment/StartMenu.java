@@ -61,7 +61,7 @@ public class StartMenu extends Fragment {
     static private final String API_KEY = "AIzaSyBIF6ehSgidGb4Q9Md64N4dfwp779dQpiI"; //sub
     //チャンネルのURL、カスタムされていないID、名前を格納する
     public String Channel_URL, Channel_ID, Channel_Name;
-    public static String Max_Results = "8";
+    public static String Max_Results = "50";
     //取得した動画のIDをまとめて格納する
     private String Video_ID;
     //取得した動画の情報を保存する二次元ArrayList配列
@@ -196,7 +196,7 @@ public class StartMenu extends Fragment {
                     e.printStackTrace();
                     //ロード画面の終了
                     progressDialog.dismiss();
-                    showToast("動画情報の取得に失敗しました");
+                    showToast("動画情報の取得に失敗しました(Find Channel ID)");
                 }
             }
         }, new Response.ErrorListener() {
@@ -210,7 +210,7 @@ public class StartMenu extends Fragment {
 
     //Youtube Data API V3(search)を使用して指定のチャンネルからアップロードされている動画のIDをリクエストし、レスポンスとして入手できるJson形式のデータをStringとして抜き出す。
     private void jsonSearch() {
-        String url = "https://www.googleapis.com/youtube/v3/search?fields=items/id/videoId,items/snippet/publishedAt,items/snippet/title,items/snippet/thumbnails/default/url&order=viewCount&part=id,snippet&maxResults=" + Max_Results + "&channelId=" + Channel_ID + "&key=" + API_KEY;
+        String url = "https://www.googleapis.com/youtube/v3/search?fields=items/id/videoId,items/snippet/publishedAt,items/snippet/title,items/snippet/thumbnails/default/url&order=date&part=id,snippet&maxResults=" + Max_Results + "&channelId=" + Channel_ID + "&key=" + API_KEY;
         //System.out.println(url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -254,7 +254,7 @@ public class StartMenu extends Fragment {
                     e.printStackTrace();
                     //ロード画面の終了
                     progressDialog.dismiss();
-                    showToast("動画情報を取得に失敗しました");
+                    showToast("動画情報の取得に失敗しました(jsonSearch)");
                 }
             }
         }, new Response.ErrorListener() {
@@ -321,7 +321,7 @@ public class StartMenu extends Fragment {
                     Log.i("test","jsonVideo完了時点で取得したサムネイル"  + thumbnailArray + "\n" );
                     showToast("動画情報を取得しました！");
                 } catch (JSONException e) {
-                    showToast("動画情報を取得に失敗しました");
+                    showToast("動画情報の取得に失敗しました(jsonVideo)");
                     e.printStackTrace();
                 }
                 //ロード画面の終了

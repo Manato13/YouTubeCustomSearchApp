@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setSupportActionBar(toolbar);
+        toolbar = findViewById(R.id.id_toolbar);
+        toolbar.setTitle("Youtube Custom Search");
         contextOfApplication = getApplicationContext();
 
         //初期画面をstart_menu.xmlにする
