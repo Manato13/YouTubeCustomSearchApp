@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import jp.ac.gifu_u.z3033116.progjissen2finalassignment.databinding.ActivityMainBinding;
 
 //リサイクルビューでの処理を管理するクラス
+//参考：https://akira-watson.com/android/recyclerview.html
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     //リストのデータを保持する変数
@@ -33,10 +34,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     ActivityMainBinding binding;
 
 
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder).
-     */
+    //ViewHolderを作成する
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView titleView;
         TextView viewCView;
@@ -53,18 +51,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             //commentCView = view.findViewById(R.id.commentC_view);
             imageView = view.findViewById(R.id.image_view);
         }
-
         public TextView getTextView() {
             return titleView;
         }
     }
 
-//    public RecyclerViewAdapter(ArrayList<Integer> itemImages, ArrayList<String> itemNames, ArrayList<String> itemEmails) {
-//        this.iImages = itemImages;
-//        this.iNames = itemNames;
-//        this.iEmails = itemEmails;
-//    }
-
+    //リサイクルビューに値や画像をセットしてくれるアダプター
     public RecyclerViewAdapter(ArrayList<String> itemTitle, ArrayList<String> itemViewCount, ArrayList<String> itemLikeCount, ArrayList<String> itemCommentCount, ArrayList<String> itemVideoID,Context context) {
         this.iTitle = itemTitle;
         this.iViewC = itemViewCount;
@@ -74,7 +66,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.context = context;
     }
 
-    // Create new views (invoked by the layout manager)
+    //ここで新しいview(Fragmentと同等の扱いとなる)を作成する
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
@@ -107,17 +99,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
 
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
+        //この位置でデータセットから要素を取得し、ビューの内容をその要素に置き換える。
+        //ビューの内容をその要素で置き換える。
         //viewHolder.imageView.setImageResource(iImages.get(position));
         viewHolder.titleView.setText(iTitle.get(position));
         viewHolder.viewCView.setText("再生回数："+iViewC.get(position)+",  高評価数："+iLikeC.get(position)+",  コメント数："+iCommentC.get(position));
         //viewHolder.likeCView.setText("高評価数："+iLikeC.get(position)+",");
         //viewHolder.commentCView.setText("コメント数："+iCommentC.get(position));
-
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
+    //データセットのサイズを返す (レイアウトマネージャによって呼び出される)
     @Override
     public int getItemCount() {
         return iTitle.size();
@@ -126,6 +117,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     //cellをタップしたらURL先の動画に飛ぶ関数
     public void goToYoutube(String id) {
         Uri uri = Uri.parse("https://youtu.be/"+id);
+        //標準で用意されているintentを使用する
         Intent intent = new Intent(Intent.ACTION_VIEW,uri);
         context.startActivity(intent);
     }

@@ -84,38 +84,38 @@ public class StartMenu extends Fragment {
     private int SelectSortMode = 1;
     //ソートを表示する順番を管理する変数(初期値は降順)
     private boolean AsDes = false;
+    //フラグメントを使用するためのマネージャー
     FragmentManager manager;
+    //UI 関連のデータを保存し管理するためのクラス
     SharedVIewModel sharedViewModel;
     private View view;
     //ロード画面の表示
     ProgressDialog progressDialog;
 
-    private final int CREATE_DOCUMENT_REQUEST = 1000;
+    //private final int CREATE_DOCUMENT_REQUEST = 1000;
 
     //フラグメントはコンストラクタ部を空っぽにする必要がある
     public StartMenu(){}
 
 
+    //フラグメントでのコンストラクタ部(onCreate)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //UI 関連のデータを保存し管理するためのクラス
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedVIewModel.class);
-
+        //start_menu.xmlを画面にはめ込む
         view = inflater.inflate(R.layout.start_menu,container,false);
         MainActivity activity = (MainActivity) getActivity();
-
         assert activity != null;
 
-
+        //ボタン・テキストエディタなどの配置とIDの登録
         textView = view.findViewById(R.id.text_view_result);
         textView.setTextColor(Color.RED);
-        //ボタン・テキストエディタなどの配置とIDの登録
         Button buttonSearch = view.findViewById(R.id.button_search);
         Button buttonSort = view.findViewById(R.id.button_sort);
         Toolbar toolbar = view.findViewById(R.id.id_toolbar);
         editText = view.findViewById(R.id.editText_channelId);
         Button csvOutputBtn = (Button) view.findViewById(R.id.button_csv);
-
-
         requestQueue = Volley.newRequestQueue(requireContext());
 
 
@@ -353,7 +353,8 @@ public class StartMenu extends Fragment {
         intent.putExtra(Intent.EXTRA_TITLE, fileName);
         resultLauncher.launch(intent);
     }
-
+    //ActivityResultContractの実行プロセスを開始するためのランチャー
+    //参考：https://akira-watson.com/android/action_create_document.html
     ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {

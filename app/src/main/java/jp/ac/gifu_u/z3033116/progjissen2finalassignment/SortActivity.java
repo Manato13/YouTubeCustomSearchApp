@@ -43,8 +43,6 @@ public class SortActivity extends Fragment {
     private final String[] spinnerSortType = {"投稿日時", "再生回数", "高評価数", "コメント数", "隠れた名作", "ユーザーカスタム"};
     private final String[] spinnerSortAscendDescend = {"昇順", "降順"};
 
-    //リサイクルビューに表示するデータ //https://akira-watson.com/android/recyclerview.html
-
 
     //フラグメントはコンストラクタ部を空っぽにする必要がある
     public SortActivity(){}
@@ -85,10 +83,9 @@ public class SortActivity extends Fragment {
 
         //リサイクルビューの設定
         RecyclerView recyclerView = view.findViewById(R.id.my_recycler_view);
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
+        //コンテンツが変更されてもRecyclerViewのレイアウトサイズが変更されないことが分かっている場合、この設定を使用
         recyclerView.setHasFixedSize(true);
-        // use a linear layout manager
+        //リニアレイアウトマネージャーを使用する
         RecyclerView.LayoutManager rLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(rLayoutManager);
 
@@ -121,8 +118,7 @@ public class SortActivity extends Fragment {
                     case "ユーザーカスタム":
                         SelectSortMode = 9;
                 }
-                //動画をソートする
-                //sortYoutubeVideos();
+
             }
             //　アイテムが選択されなかった
             public void onNothingSelected(AdapterView<?> parent) {
@@ -147,8 +143,7 @@ public class SortActivity extends Fragment {
                     case "降順":
                         AsDes = false;
                 }
-                //動画をソートする
-                //sortYoutubeVideos();
+
             }
             //　アイテムが選択されなかった
             public void onNothingSelected(AdapterView<?> parent) {

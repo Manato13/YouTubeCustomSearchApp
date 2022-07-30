@@ -5,6 +5,4 @@ import androidx.lifecycle.ViewModel;
 //各フラグメントで共通で使用したい変数などを保存するクラス
 public class SharedVIewModel extends ViewModel {
 
-
-
 }

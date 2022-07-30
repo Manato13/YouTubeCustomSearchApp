@@ -53,16 +53,16 @@ import androidx.fragment.app.FragmentTransaction;
 import android.app.Activity;
 
 
+//起動直後の処理を行うクラス
 public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     FragmentManager manager;
     public static Context contextOfApplication;
 
-
-
     //コンストラクタ部(=onCreate)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //フラグメント、ツールバーなどの設定
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setSupportActionBar(toolbar);
